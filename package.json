@@ -11,7 +11,8 @@
     "postinstall": "husky install",
     "infra": "yarn workspace @afs-backend/infrastructure",
     "app": "yarn workspace @afs-backend/app",
-    "build": "yarn workspaces foreach -vp run build"
+    "build": "yarn workspaces foreach -vp run build",
+    "cdktf": "cdktf"
   },
   "private": true,
   "engines": {
@@ -37,5 +38,8 @@
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.0.0",
     "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "fs-extra": "^10.1.0"
   }
 }
