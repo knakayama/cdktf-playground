@@ -1,0 +1,22 @@
+{
+  "name": "cdktf-play-ground",
+  "version": "0.0.1",
+  "description": "CDKTF play ground",
+  "scripts": {
+    "lint:ec": "ec --exclude 'node_modules|dist|\\.git|cdk\\.out|\\.yarn'",
+    "lint:eslint": "eslint --ext .ts packages",
+    "lint:prettier": "prettier --check '{packages,docs,.github}/**/*.{ts,yaml,md,json}' '*.{md,yaml,json,js}'",
+    "lint": "yarn lint:ec && yarn lint:prettier && yarn lint:eslint",
+    "postinstall": "husky install",
+    "infra": "yarn workspace @afs-backend/infrastructure",
+    "app": "yarn workspace @afs-backend/app",
+    "build": "yarn workspaces foreach -vp run build"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=18.7.0",
+    "npm": "please_use_yarn_instead"
+  },
+  "license": "UNLICENSED",
+  "repository": "https://github.com/knakayama/cdktf-play-ground.git",
+}
