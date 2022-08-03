@@ -14,9 +14,6 @@
     "build": "yarn workspaces foreach -vp run build"
   },
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "engines": {
     "node": ">=18.7.0",
     "npm": "please_use_yarn_instead"
@@ -27,6 +24,7 @@
     "@types/node": "^18.6.3",
     "@typescript-eslint/eslint-plugin": "^5.32.0",
     "@typescript-eslint/parser": "^5.32.0",
+    "cdktf-cli": "^0.12.0",
     "editorconfig-checker": "^4.0.2",
     "eslint": "^8.21.0",
     "eslint-config-prettier": "^8.5.0",
