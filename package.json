@@ -1,5 +1,6 @@
 {
-  "name": "cdktf-play-ground",
+  "name": "cdktf-play-groud",
+  "packageManager": "yarn@3.2.2",
   "version": "0.0.1",
   "description": "CDKTF play ground",
   "scripts": {
@@ -13,10 +14,30 @@
     "build": "yarn workspaces foreach -vp run build"
   },
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "engines": {
     "node": ">=18.7.0",
     "npm": "please_use_yarn_instead"
   },
   "license": "UNLICENSED",
   "repository": "https://github.com/knakayama/cdktf-play-ground.git",
+  "devDependencies": {
+    "@types/node": "^18.6.3",
+    "@typescript-eslint/eslint-plugin": "^5.32.0",
+    "@typescript-eslint/parser": "^5.32.0",
+    "editorconfig-checker": "^4.0.2",
+    "eslint": "^8.21.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jest": "^26.7.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-unicorn": "^43.0.2",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "prettier": "^2.7.1",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.0.0",
+    "typescript": "^4.7.4"
+  }
 }
