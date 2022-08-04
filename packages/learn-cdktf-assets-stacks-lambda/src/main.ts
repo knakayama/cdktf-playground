@@ -52,7 +52,8 @@ class LambdaStack extends TerraformStack {
     })
 
     const bucket = new aws.s3.S3Bucket(this, 'bucket', {
-      bucketPrefix: `learn-cdktf-${name}`,
+      bucketPrefix: `learn-cdktf-${name.toLowerCase()}`,
+      forceDestroy: true,
     })
 
     const lambdaArchive = new aws.s3.S3Object(this, 'lambdaArchive', {
