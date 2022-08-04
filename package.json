@@ -5,7 +5,7 @@
   "description": "CDKTF play ground",
   "scripts": {
     "lint:ec": "ec --exclude 'node_modules|dist|\\.git|cdk\\.out|\\.yarn'",
-    "lint:eslint": "eslint --ext .ts packages",
+    "lint:eslint": "eslint --ext .ts src",
     "lint:prettier": "prettier --check '*.{md,yaml,json,js,ts}'",
     "lint": "yarn lint:ec && yarn lint:prettier && yarn lint:eslint",
     "postinstall": "husky install",
