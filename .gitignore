@@ -9,3 +9,4 @@ cdktf.out/
 !.yarn/sdks
 !.yarn/versions
 *tfstate*
+dist/

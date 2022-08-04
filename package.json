@@ -14,7 +14,8 @@
     "watch": "tsc -w",
     "test": "jest",
     "test:watch": "jest --watch",
-    "package": "yarn workspace"
+    "package": "yarn workspace",
+    "cdktf": "cdktf"
   },
   "workspaces": [
     "packages/*"
@@ -26,6 +27,7 @@
   "license": "MIT",
   "repository": "https://github.com/knakayama/cdktf-playground.git",
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.101",
     "@types/jest": "^28.1.6",
     "@types/node": "^18.6.3",
     "@typescript-eslint/eslint-plugin": "^5.32.0",
@@ -50,6 +52,7 @@
   "dependencies": {
     "@cdktf/provider-aws": "9.0.10",
     "@cdktf/provider-docker": "2.0.9",
+    "@cdktf/provider-random": "2.0.9",
     "cdktf": "^0.12.0",
     "constructs": "^10.1.65"
   }
