@@ -6,7 +6,7 @@
   "scripts": {
     "lint:ec": "ec --exclude 'node_modules|dist|\\.git|cdk\\.out|\\.yarn'",
     "lint:eslint": "eslint --ext .ts packages",
-    "lint:prettier": "prettier --check '{packages,docs,.github}/**/*.{ts,yaml,md,json}' '*.{md,yaml,json,js}'",
+    "lint:prettier": "prettier --check '*.{md,yaml,json,js,ts}'",
     "lint": "yarn lint:ec && yarn lint:prettier && yarn lint:eslint",
     "postinstall": "husky install",
     "cdktf": "cdktf",
