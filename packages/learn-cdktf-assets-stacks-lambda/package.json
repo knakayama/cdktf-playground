@@ -4,7 +4,8 @@
   "version": "0.0.1",
   "description": "EC2",
   "scripts": {
-    "cdktf": "cdktf"
+    "cdktf": "cdktf",
+    "build": "tsc"
   },
   "license": "MIT"
 }
