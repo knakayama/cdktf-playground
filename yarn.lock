@@ -397,6 +397,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cdktf-play-ground/docker@workspace:packages/docker":
+  version: 0.0.0-use.local
+  resolution: "@cdktf-play-ground/docker@workspace:packages/docker"
+  languageName: unknown
+  linkType: soft
+
 "@cdktf/hcl2cdk@npm:0.12.0":
   version: 0.12.0
   resolution: "@cdktf/hcl2cdk@npm:0.12.0"
@@ -425,6 +431,16 @@ __metadata:
     "@types/node-fetch": ^2.6.2
     node-fetch: ^2.6.7
   checksum: b838844bb7fc6e22e9fd7c5e197213fa66a6e67ccdbf86901ab09af9715358e2e8dd6f3258af7104378ef9854e1d1414e0c92f231a2a6102b45721254dae7a4b
+  languageName: node
+  linkType: hard
+
+"@cdktf/provider-aws@npm:9.0.10":
+  version: 9.0.10
+  resolution: "@cdktf/provider-aws@npm:9.0.10"
+  peerDependencies:
+    cdktf: ^0.12.0
+    constructs: ^10.0.0
+  checksum: 1cfa3b4b4b8ca2ea5e2827492ecfac7be13a1ccc44578787df20cc832c37e315f6db3bd3590d79144542e18dd9a8bda79307b4c90a5e1db13a8f69d037f0c26f
   languageName: node
   linkType: hard
 
@@ -1845,6 +1861,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "cdktf-play-groud@workspace:."
   dependencies:
+    "@cdktf/provider-aws": 9.0.10
     "@cdktf/provider-docker": 2.0.9
     "@types/jest": ^28.1.6
     "@types/node": ^18.6.3

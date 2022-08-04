@@ -1,10 +1,11 @@
 /tmp/
 /node_modules/
 .pnp.*
-/cdktf.out/
+cdktf.out/
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+*tfstate*
