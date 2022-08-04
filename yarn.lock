@@ -403,6 +403,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cdktf-playground/ec2@workspace:packages/ec2":
+  version: 0.0.0-use.local
+  resolution: "@cdktf-playground/ec2@workspace:packages/ec2"
+  languageName: unknown
+  linkType: soft
+
 "@cdktf/hcl2cdk@npm:0.12.0":
   version: 0.12.0
   resolution: "@cdktf/hcl2cdk@npm:0.12.0"
