@@ -1,10 +1,9 @@
 import { APIGatewayProxyResultV2 } from 'aws-lambda'
 
 export const handler = async (): Promise<APIGatewayProxyResultV2> => ({
-
-    statusCode: 200,
-    headers: {
-      'Content-Type': 'text/html; charset=utf-8',
-    },
-    body: `<p>Hello world!</p>`,
-  })
+  statusCode: 200,
+  headers: {
+    'Content-Type': 'text/html; charset=utf-8',
+  },
+  body: `<p>Hello world!</p>`,
+})
