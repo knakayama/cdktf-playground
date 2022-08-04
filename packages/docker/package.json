@@ -1,5 +1,5 @@
 {
-  "name": "@cdktf-play-ground/docker",
+  "name": "@cdktf-playground/docker",
   "packageManager": "yarn@3.2.2",
   "version": "0.0.1",
   "description": "CDKTF play ground docker",

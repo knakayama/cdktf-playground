@@ -397,9 +397,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cdktf-play-ground/docker@workspace:packages/docker":
+"@cdktf-playground/docker@workspace:packages/docker":
   version: 0.0.0-use.local
-  resolution: "@cdktf-play-ground/docker@workspace:packages/docker"
+  resolution: "@cdktf-playground/docker@workspace:packages/docker"
   languageName: unknown
   linkType: soft
 
@@ -1857,9 +1857,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cdktf-play-groud@workspace:.":
+"cdktf-playgroud@workspace:.":
   version: 0.0.0-use.local
-  resolution: "cdktf-play-groud@workspace:."
+  resolution: "cdktf-playgroud@workspace:."
   dependencies:
     "@cdktf/provider-aws": 9.0.10
     "@cdktf/provider-docker": 2.0.9

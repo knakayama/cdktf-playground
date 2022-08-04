@@ -1,10 +1,10 @@
 {
-  "name": "cdktf-play-groud",
+  "name": "cdktf-playgroud",
   "packageManager": "yarn@3.2.2",
   "version": "0.0.1",
-  "description": "CDKTF play ground",
+  "description": "CDKTF playground",
   "scripts": {
-    "lint:ec": "ec --exclude 'node_modules|dist|\\.git|cdk\\.out|\\.yarn'",
+    "lint:ec": "ec --exclude 'node_modules|\\.git|cdktf\\.out|\\.yarn'",
     "lint:eslint": "eslint --ext .ts src",
     "lint:prettier": "prettier --check 'packages/**/*.{ts,yaml,md,json}' '*.{md,yaml,json,js,ts}'",
     "lint": "yarn lint:ec && yarn lint:prettier && yarn lint:eslint",
@@ -24,7 +24,7 @@
     "npm": "please_use_yarn_instead"
   },
   "license": "MIT",
-  "repository": "https://github.com/knakayama/cdktf-play-ground.git",
+  "repository": "https://github.com/knakayama/cdktf-playground.git",
   "devDependencies": {
     "@types/jest": "^28.1.6",
     "@types/node": "^18.6.3",
