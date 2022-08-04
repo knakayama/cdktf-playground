@@ -112,6 +112,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cdktf/provider-docker@npm:2.0.9":
+  version: 2.0.9
+  resolution: "@cdktf/provider-docker@npm:2.0.9"
+  peerDependencies:
+    cdktf: ^0.12.0
+    constructs: ^10.0.0
+  checksum: 021ff6b8b2ff84bfd5920ff8f51f4831f695d7c5d8b8ddeb86b4357774c9f84d54969954b38971e80ff0cab00b6ad11aac6897674fb2f8f5767fb52c05f59be2
+  languageName: node
+  linkType: hard
+
 "@cdktf/provider-generator@npm:0.12.0":
   version: 0.12.0
   resolution: "@cdktf/provider-generator@npm:0.12.0"
@@ -972,6 +982,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "cdktf-play-groud@workspace:."
   dependencies:
+    "@cdktf/provider-docker": 2.0.9
     "@types/jest": ^28.1.6
     "@types/node": ^18.6.3
     "@typescript-eslint/eslint-plugin": ^5.32.0

@@ -45,6 +45,7 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
+    "@cdktf/provider-docker": "2.0.9",
     "cdktf": "^0.12.0",
     "constructs": "^10.1.65"
   }
