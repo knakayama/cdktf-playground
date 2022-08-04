@@ -1,26 +1,25 @@
 module.exports = {
   env: {
-    //jest: true,
+    jest: true,
     node: true,
   },
-  //settings: {
-  //  jest: {
-  //    // eslint-disable-next-line @typescript-eslint/no-var-requires
-  //    version: require('./packages/app/node_modules/jest/package.json').version,
-  //  },
-  //},
+  settings: {
+    jest: {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      version: require('./node_modules/jest/package.json').version,
+    },
+  },
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'prettier',
-    //'plugin:jest/recommended',
+    'plugin:jest/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 9,
   },
-  //plugins: ['@typescript-eslint', 'jest', 'unicorn'],
-  plugins: ['@typescript-eslint', 'unicorn'],
+  plugins: ['@typescript-eslint', 'jest', 'unicorn'],
   ignorePatterns: ['**/cdk.out/**'],
   rules: {
     '@typescript-eslint/camelcase': 'off',
