@@ -1,0 +1,10 @@
+{
+  "name": "@cdktf-playground/nw-q1",
+  "packageManager": "yarn@3.2.2",
+  "version": "0.0.1",
+  "description": "EC2",
+  "scripts": {
+    "cdktf": "cdktf"
+  },
+  "license": "MIT"
+}

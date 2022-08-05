@@ -415,6 +415,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cdktf-playground/nw-q1@workspace:packages/nw-q1":
+  version: 0.0.0-use.local
+  resolution: "@cdktf-playground/nw-q1@workspace:packages/nw-q1"
+  languageName: unknown
+  linkType: soft
+
 "@cdktf/hcl2cdk@npm:0.12.0":
   version: 0.12.0
   resolution: "@cdktf/hcl2cdk@npm:0.12.0"
