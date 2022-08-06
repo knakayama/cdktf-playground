@@ -1,8 +1,9 @@
 import { Construct } from 'constructs'
 import { TerraformStack } from 'cdktf'
 import { AwsProvider } from '@cdktf/provider-aws'
-import { awsRegion } from '../../modules/utils'
+import { awsRegion, defaultTag } from '../../modules/constants'
 import { Network } from '../resources/network'
+import { DataSources } from '../resources/dataSources'
 //import { Compute } from '../resources/compute'
 
 export class NWQ1Stack extends TerraformStack {
@@ -10,15 +11,19 @@ export class NWQ1Stack extends TerraformStack {
     super(scope, name)
 
     new AwsProvider(this, 'aws', {
-      region: awsRegion(),
+      region: awsRegion,
       defaultTags: {
         tags: {
-          Name: 'nw-q1',
+          Name: defaultTag,
         },
       },
     })
 
-    new Network(this, 'network')
+    const dataSources = new DataSources(this, 'data-sources')
+
+    new Network(this, 'network', {
+      azs: dataSources.azs,
+    })
     //new Compute(this, 'compute')
   }
 }
