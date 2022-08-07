@@ -39,5 +39,24 @@ export class Network extends Resource {
       },
     })
     publicSubnet.addOverride('count', CidrBlocks.publicSubnets.length)
+
+    const privateSubnet = new vpc.Subnet(this, 'private', {
+      vpcId: myVpc.id,
+      cidrBlock: Fn.element(
+        CidrBlocks.privateSubnets as unknown as string[],
+        Token.asNumber('count.index') + 1
+      ),
+      availabilityZone: Fn.element(
+        props.azs.names,
+        Token.asNumber('count.index') + 1
+      ),
+      tags: {
+        Name: `${defaultTag}-private-${Fn.element(
+          props.azs.names,
+          Token.asNumber('count.index') + 1
+        )}`,
+      },
+    })
+    privateSubnet.addOverride('count', CidrBlocks.privateSubnets.length)
   }
 }
