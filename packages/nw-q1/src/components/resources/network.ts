@@ -1,7 +1,7 @@
 import { Construct } from 'constructs'
-import { Resource, Fn, Token } from 'cdktf'
-import { vpc, datasources } from '@cdktf/provider-aws'
-import { CidrBlocks, defaultTag } from '../../modules/constants'
+import { Resource, Fn } from 'cdktf'
+import { vpc, datasources, ec2 } from '@cdktf/provider-aws'
+import { CidrBlocks } from '../../modules/constants'
 
 interface NetworkProps {
   azs: datasources.DataAwsAvailabilityZones
@@ -21,42 +21,65 @@ export class Network extends Resource {
       enableDnsHostnames: true,
     })
 
-    const publicSubnet = new vpc.Subnet(this, 'public', {
-      vpcId: myVpc.id,
-      cidrBlock: Fn.element(
-        CidrBlocks.publicSubnets as unknown as string[],
-        Token.asNumber('count.index') + 1
-      ),
-      availabilityZone: Fn.element(
-        props.azs.names,
-        Token.asNumber('count.index') + 1
-      ),
-      tags: {
-        Name: `${defaultTag}-public-${Fn.element(
-          props.azs.names,
-          Token.asNumber('count.index') + 1
-        )}`,
-      },
-    })
-    publicSubnet.addOverride('count', CidrBlocks.publicSubnets.length)
+    const publicSubnets = CidrBlocks.publicSubnets.map(
+      (cidrBlock, idx) =>
+        new vpc.Subnet(this, `public_${idx}`, {
+          vpcId: myVpc.id,
+          cidrBlock,
+          availabilityZone: Fn.element(
+            props.azs.names,
+            Fn.index(CidrBlocks.publicSubnets as unknown as string[], cidrBlock)
+          ),
+        })
+    )
 
-    const privateSubnet = new vpc.Subnet(this, 'private', {
+    CidrBlocks.privateSubnets.map(
+      (cidrBlock, idx) =>
+        new vpc.Subnet(this, `private_${idx}`, {
+          vpcId: myVpc.id,
+          cidrBlock,
+          availabilityZone: Fn.element(
+            props.azs.names,
+            Fn.index(
+              CidrBlocks.privateSubnets as unknown as string[],
+              cidrBlock
+            )
+          ),
+        })
+    )
+
+    CidrBlocks.isolatedSubnets.map(
+      (cidrBlock, idx) =>
+        new vpc.Subnet(this, `isolated_${idx}`, {
+          vpcId: myVpc.id,
+          cidrBlock,
+          availabilityZone: Fn.element(
+            props.azs.names,
+            Fn.index(
+              CidrBlocks.isolatedSubnets as unknown as string[],
+              cidrBlock
+            )
+          ),
+        })
+    )
+
+    new vpc.InternetGateway(this, 'igw', {
       vpcId: myVpc.id,
-      cidrBlock: Fn.element(
-        CidrBlocks.privateSubnets as unknown as string[],
-        Token.asNumber('count.index') + 1
-      ),
-      availabilityZone: Fn.element(
-        props.azs.names,
-        Token.asNumber('count.index') + 1
-      ),
-      tags: {
-        Name: `${defaultTag}-private-${Fn.element(
-          props.azs.names,
-          Token.asNumber('count.index') + 1
-        )}`,
-      },
     })
-    privateSubnet.addOverride('count', CidrBlocks.privateSubnets.length)
+
+    const eips = CidrBlocks.publicSubnets.map(
+      (_, idx) =>
+        new ec2.Eip(this, `eip_${idx}`, {
+          vpc: true,
+        })
+    )
+
+    publicSubnets.map(
+      (subnet, idx) =>
+        new vpc.NatGateway(this, `nat_gateway_${idx}`, {
+          subnetId: subnet.id,
+          allocationId: eips[idx].id,
+        })
+    )
   }
 }
