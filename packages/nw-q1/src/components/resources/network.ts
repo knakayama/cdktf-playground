@@ -1,7 +1,7 @@
 import { Construct } from 'constructs'
 import { Resource, Fn } from 'cdktf'
-import { vpc, datasources, ec2 } from '@cdktf/provider-aws'
-import { CidrBlocks, defaultTag } from '../../modules/constants'
+import { vpc, datasources, ec2, iam } from '@cdktf/provider-aws'
+import { awsRegion, CidrBlocks, defaultTag } from '../../modules/constants'
 import { uniqueId } from '@cdktf-playground/core/src'
 
 interface NetworkProps {
@@ -223,7 +223,7 @@ export class Network extends Resource {
       )
     })
 
-    new vpc.SecurityGroup(
+    const ssmSG = new vpc.SecurityGroup(
       this,
       uniqueId({
         prefix: vpc.SecurityGroup,
@@ -240,6 +240,80 @@ export class Network extends Resource {
           },
         ],
       }
+    )
+
+    const vpcEndpointPolicy = new iam.DataAwsIamPolicyDocument(
+      this,
+      uniqueId({
+        prefix: iam.DataAwsIamPolicyDocument,
+        suffix: 'vpc_endpoint',
+      }),
+      {
+        statement: [
+          {
+            effect: 'Allow',
+            actions: ['*'],
+            resources: ['*'],
+            principals: [
+              {
+                identifiers: ['*'],
+                type: 'AWS',
+              },
+            ],
+          },
+        ],
+      }
+    )
+
+    const services = ['ssm', 'ec2messages', 'ssmmessages', 'ec2', 'logs', 'kms']
+
+    services.forEach(
+      (service) =>
+        new vpc.VpcEndpoint(
+          this,
+          uniqueId({
+            prefix: vpc.VpcEndpoint,
+            suffix: service,
+          }),
+          {
+            vpcId: myVpc.id,
+            subnetIds: privateSubnets.map((subnet) => subnet.id),
+            serviceName: `com.amazonaws.${awsRegion}.${service}`,
+            vpcEndpointType: 'Interface',
+            securityGroupIds: [ssmSG.id],
+            privateDnsEnabled: true,
+            policy: vpcEndpointPolicy.json,
+          }
+        )
+    )
+
+    const vpcEndpointS3 = new vpc.VpcEndpoint(
+      this,
+      uniqueId({
+        prefix: vpc.VpcEndpoint,
+        suffix: 's3',
+      }),
+      {
+        vpcId: myVpc.id,
+        serviceName: `com.amazonaws.${awsRegion}.s3`,
+        vpcEndpointType: 'Gateway',
+        policy: vpcEndpointPolicy.json,
+      }
+    )
+
+    privateRouteTables.forEach(
+      (routeTable, idx) =>
+        new vpc.VpcEndpointRouteTableAssociation(
+          this,
+          uniqueId({
+            prefix: vpc.VpcEndpointRouteTableAssociation,
+            suffix: `s3_${idx}`,
+          }),
+          {
+            vpcEndpointId: vpcEndpointS3.id,
+            routeTableId: routeTable.id,
+          }
+        )
     )
   }
 }
