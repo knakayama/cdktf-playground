@@ -223,11 +223,22 @@ export class Network extends Resource {
       )
     })
 
-    //const ssmSG = new vpc.SecurityGroup(this, uniqueId({
-    //  prefix: vpc.SecurityGroup,
-    //  suffix: 'ssm'
-    //}), {
-    //  ingress: new vpc.SecurityGroupIngressList()
-    //})
+    new vpc.SecurityGroup(
+      this,
+      uniqueId({
+        prefix: vpc.SecurityGroup,
+        suffix: 'ssm',
+      }),
+      {
+        ingress: [
+          {
+            fromPort: 443,
+            toPort: 443,
+            protocol: 'tcp',
+            cidrBlocks: [myVpc.cidrBlock],
+          },
+        ],
+      }
+    )
   }
 }
