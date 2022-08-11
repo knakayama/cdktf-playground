@@ -54,7 +54,7 @@ export class Network extends Resource {
         )
     )
 
-    CidrBlocks.privateSubnets.map(
+    const privateSubnets = CidrBlocks.privateSubnets.map(
       (cidrBlock, idx) =>
         new vpc.Subnet(
           this,
@@ -118,7 +118,7 @@ export class Network extends Resource {
         )
     )
 
-    publicSubnets.map(
+    const natGateways = publicSubnets.map(
       (subnet, idx) =>
         new vpc.NatGateway(
           this,
@@ -162,7 +162,7 @@ export class Network extends Resource {
       }
     )
 
-    publicSubnets.map(
+    publicSubnets.forEach(
       (subnet, idx) =>
         new vpc.RouteTableAssociation(
           this,
@@ -176,5 +176,58 @@ export class Network extends Resource {
           }
         )
     )
+
+    const privateRouteTables = privateSubnets.map(
+      (_, idx) =>
+        new vpc.RouteTable(
+          this,
+          uniqueId({
+            prefix: vpc.RouteTable,
+            suffix: `private_${idx + 1}`,
+          }),
+          {
+            vpcId: myVpc.id,
+            tags: {
+              Name: `${defaultTag}-private-${idx + 1}`,
+            },
+          }
+        )
+    )
+
+    privateRouteTables.forEach((routeTable, idx) => {
+      new vpc.Route(
+        this,
+        uniqueId({
+          prefix: vpc.Route,
+          suffix: `private_${idx + 1}`,
+        }),
+        {
+          destinationCidrBlock: '0.0.0.0/0',
+          routeTableId: routeTable.id,
+          natGatewayId: natGateways[idx].id,
+        }
+      )
+    })
+
+    privateSubnets.forEach((subnet, idx) => {
+      new vpc.RouteTableAssociation(
+        this,
+        uniqueId({
+          prefix: vpc.RouteTableAssociation,
+          suffix: `private_${idx + 1}`,
+        }),
+        {
+          subnetId: subnet.id,
+          routeTableId: privateRouteTables[idx].id,
+        }
+      )
+    })
+
+    //const ssmSG = new vpc.SecurityGroup(this, uniqueId({
+    //  prefix: vpc.SecurityGroup,
+    //  suffix: 'ssm'
+    //}), {
+    //  ingress: new vpc.SecurityGroupIngressList()
+    //})
   }
 }
