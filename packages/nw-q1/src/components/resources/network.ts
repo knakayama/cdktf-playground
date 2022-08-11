@@ -230,6 +230,7 @@ export class Network extends Resource {
         suffix: 'ssm',
       }),
       {
+        vpcId: myVpc.id,
         ingress: [
           {
             fromPort: 443,
