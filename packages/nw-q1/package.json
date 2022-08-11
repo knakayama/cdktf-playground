@@ -6,5 +6,8 @@
   "scripts": {
     "cdktf": "cdktf"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@cdktf-playground/core": "^0.0.1"
+  }
 }
