@@ -4,7 +4,7 @@ import { AwsProvider } from '@cdktf/provider-aws'
 import { awsRegion, defaultTag } from '../../modules/constants'
 import { Network } from '../resources/network'
 import { DataSources } from '../resources/dataSources'
-//import { Compute } from '../resources/compute'
+import { S3 } from '../resources/s3'
 
 export class NWQ1Stack extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -24,6 +24,6 @@ export class NWQ1Stack extends TerraformStack {
     new Network(this, 'network', {
       azs: dataSources.azs,
     })
-    //new Compute(this, 'compute')
+    new S3(this, 's3')
   }
 }
