@@ -4,7 +4,8 @@ import { AwsProvider } from '@cdktf/provider-aws'
 import { awsRegion, defaultTag } from '../../modules/constants'
 import { Network } from '../resources/network'
 import { DataSources } from '../resources/dataSources'
-import { S3 } from '../resources/s3'
+import { ObjectStorage } from '../resources/objectStorage'
+import { Encryption } from '../resources/encryption'
 
 export class NWQ1Stack extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -19,11 +20,19 @@ export class NWQ1Stack extends TerraformStack {
       },
     })
 
-    const dataSources = new DataSources(this, 'data-sources')
+    const dataSources = new DataSources(this, 'data_sources')
+
+    const encryption = new Encryption(this, 'encryption', {
+      callerIdentity: dataSources.callerIdentity,
+      partition: dataSources.partition,
+    })
 
     new Network(this, 'network', {
       azs: dataSources.azs,
     })
-    new S3(this, 's3')
+
+    new ObjectStorage(this, 'objectStorage', {
+      encryptionKey: encryption.key,
+    })
   }
 }
