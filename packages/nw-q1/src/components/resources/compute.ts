@@ -190,7 +190,7 @@ export class Compute extends Resource {
       }
     )
 
-    const iamInstanceProfile = new iam.IamInstanceProfile(
+    const ssmInstanceProfile = new iam.IamInstanceProfile(
       this,
       uniqueId({
         prefix: iam.IamInstanceProfile,
@@ -214,7 +214,9 @@ export class Compute extends Resource {
           path.join(__dirname, '../../modules/artifacts/user-data.sh')
         ),
         vpcSecurityGroupIds: [sg.id],
-        iamInstanceProfile,
+        iamInstanceProfile: {
+          arn: ssmInstanceProfile.arn,
+        },
         lifecycle: {
           createBeforeDestroy: true,
         },
