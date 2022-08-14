@@ -9,6 +9,8 @@ interface NetworkProps {
 }
 
 export class Network extends Resource {
+  public readonly vpc: vpc.Vpc
+
   constructor(
     readonly scope: Construct,
     readonly name: string,
@@ -16,7 +18,7 @@ export class Network extends Resource {
   ) {
     super(scope, name)
 
-    const myVpc = new vpc.Vpc(
+    this.vpc = new vpc.Vpc(
       this,
       uniqueId({
         prefix: vpc.Vpc,
@@ -38,7 +40,7 @@ export class Network extends Resource {
             suffix: `public_${idx + 1}`,
           }),
           {
-            vpcId: myVpc.id,
+            vpcId: this.vpc.id,
             cidrBlock,
             availabilityZone: Fn.element(
               props.azs.names,
@@ -63,7 +65,7 @@ export class Network extends Resource {
             suffix: `private_${idx + 1}`,
           }),
           {
-            vpcId: myVpc.id,
+            vpcId: this.vpc.id,
             cidrBlock,
             availabilityZone: Fn.element(
               props.azs.names,
@@ -88,7 +90,7 @@ export class Network extends Resource {
             suffix: `isolated_${idx + 1}`,
           }),
           {
-            vpcId: myVpc.id,
+            vpcId: this.vpc.id,
             cidrBlock,
             availabilityZone: Fn.element(
               props.azs.names,
@@ -140,7 +142,7 @@ export class Network extends Resource {
         suffix: 'public',
       }),
       {
-        vpcId: myVpc.id,
+        vpcId: this.vpc.id,
         tags: {
           Name: `${defaultTag}-public`,
         },
@@ -157,7 +159,7 @@ export class Network extends Resource {
         destinationCidrBlock: '0.0.0.0/0',
         routeTableId: publicRouteTable.id,
         gatewayId: new vpc.InternetGateway(this, 'igw', {
-          vpcId: myVpc.id,
+          vpcId: this.vpc.id,
         }).id,
       }
     )
@@ -186,7 +188,7 @@ export class Network extends Resource {
             suffix: `private_${idx + 1}`,
           }),
           {
-            vpcId: myVpc.id,
+            vpcId: this.vpc.id,
             tags: {
               Name: `${defaultTag}-private-${idx + 1}`,
             },
@@ -230,13 +232,13 @@ export class Network extends Resource {
         suffix: 'ssm',
       }),
       {
-        vpcId: myVpc.id,
+        vpcId: this.vpc.id,
         ingress: [
           {
             fromPort: 443,
             toPort: 443,
             protocol: 'tcp',
-            cidrBlocks: [myVpc.cidrBlock],
+            cidrBlocks: [this.vpc.cidrBlock],
           },
         ],
       }
@@ -276,7 +278,7 @@ export class Network extends Resource {
             suffix: service,
           }),
           {
-            vpcId: myVpc.id,
+            vpcId: this.vpc.id,
             subnetIds: privateSubnets.map((subnet) => subnet.id),
             serviceName: `com.amazonaws.${awsRegion}.${service}`,
             vpcEndpointType: 'Interface',
@@ -294,7 +296,7 @@ export class Network extends Resource {
         suffix: 's3',
       }),
       {
-        vpcId: myVpc.id,
+        vpcId: this.vpc.id,
         serviceName: `com.amazonaws.${awsRegion}.s3`,
         vpcEndpointType: 'Gateway',
         policy: vpcEndpointPolicy.json,

@@ -3,16 +3,17 @@ import { Resource } from 'cdktf'
 import { vpc } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 
-interface ComputeProps {
+interface LoadBalancerProps {
   vpc: vpc.Vpc
-  loadBalancerSG: vpc.SecurityGroup
 }
 
-export class Compute extends Resource {
-  constructor(scope: Construct, name: string, props: ComputeProps) {
+export class LoadBalancer extends Resource {
+  public readonly loadBalancerSG: vpc.SecurityGroup
+
+  constructor(scope: Construct, name: string, props: LoadBalancerProps) {
     super(scope, name)
 
-    new vpc.SecurityGroup(
+    this.loadBalancerSG = new vpc.SecurityGroup(
       this,
       uniqueId({
         prefix: vpc.SecurityGroup,
@@ -22,10 +23,10 @@ export class Compute extends Resource {
         vpcId: props.vpc.id,
         ingress: [
           {
-            fromPort: 80,
-            toPort: 80,
+            fromPort: 443,
+            toPort: 443,
             protocol: 'tcp',
-            securityGroups: [props.loadBalancerSG.id],
+            cidrBlocks: ['0.0.0.0/0'],
           },
         ],
         egress: [
