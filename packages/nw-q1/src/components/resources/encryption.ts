@@ -2,7 +2,7 @@ import { Construct } from 'constructs'
 import { Resource } from 'cdktf'
 import { datasources, iam, kms } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
-import { awsRegion } from '../../modules/constants'
+import { awsRegion } from '../../modules/utils/constants'
 
 interface EncryptionProps {
   partition: datasources.DataAwsPartition

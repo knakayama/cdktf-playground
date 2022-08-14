@@ -1,7 +1,11 @@
 import { Construct } from 'constructs'
 import { Resource, Fn } from 'cdktf'
 import { vpc, datasources, ec2, iam } from '@cdktf/provider-aws'
-import { awsRegion, CidrBlocks, defaultTag } from '../../modules/constants'
+import {
+  awsRegion,
+  CidrBlocks,
+  defaultTag,
+} from '../../modules/utils/constants'
 import { uniqueId } from '@cdktf-playground/core/src'
 
 interface NetworkProps {
@@ -10,6 +14,7 @@ interface NetworkProps {
 
 export class Network extends Resource {
   public readonly vpc: vpc.Vpc
+  public readonly privateSubnets: vpc.Subnet[]
 
   constructor(
     readonly scope: Construct,
@@ -56,7 +61,7 @@ export class Network extends Resource {
         )
     )
 
-    const privateSubnets = CidrBlocks.privateSubnets.map(
+    this.privateSubnets = CidrBlocks.privateSubnets.map(
       (cidrBlock, idx) =>
         new vpc.Subnet(
           this,
@@ -179,7 +184,7 @@ export class Network extends Resource {
         )
     )
 
-    const privateRouteTables = privateSubnets.map(
+    const privateRouteTables = this.privateSubnets.map(
       (_, idx) =>
         new vpc.RouteTable(
           this,
@@ -211,7 +216,7 @@ export class Network extends Resource {
       )
     })
 
-    privateSubnets.forEach((subnet, idx) => {
+    this.privateSubnets.forEach((subnet, idx) => {
       new vpc.RouteTableAssociation(
         this,
         uniqueId({
@@ -279,7 +284,7 @@ export class Network extends Resource {
           }),
           {
             vpcId: this.vpc.id,
-            subnetIds: privateSubnets.map((subnet) => subnet.id),
+            subnetIds: this.privateSubnets.map((subnet) => subnet.id),
             serviceName: `com.amazonaws.${awsRegion}.${service}`,
             vpcEndpointType: 'Interface',
             securityGroupIds: [ssmSG.id],

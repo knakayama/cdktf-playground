@@ -1,7 +1,7 @@
 import { Construct } from 'constructs'
 import { TerraformStack } from 'cdktf'
 import { AwsProvider } from '@cdktf/provider-aws'
-import { awsRegion, defaultTag } from '../../modules/constants'
+import { awsRegion, defaultTag } from '../../modules/utils/constants'
 import { Network } from '../resources/network'
 import { DataSources } from '../resources/dataSources'
 import { ObjectStorage } from '../resources/objectStorage'
@@ -44,6 +44,7 @@ export class NWQ1Stack extends TerraformStack {
     new Compute(this, 'compute', {
       vpc: network.vpc,
       loadBalancerSG: lb.loadBalancerSG,
+      privateSubnets: network.privateSubnets,
     })
   }
 }
