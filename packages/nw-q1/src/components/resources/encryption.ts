@@ -10,7 +10,7 @@ interface EncryptionProps {
 }
 
 export class Encryption extends Resource {
-  public readonly key: kms.KmsKey
+  public readonly encryptionKey: kms.KmsKey
 
   constructor(
     readonly scope: Construct,
@@ -61,7 +61,7 @@ export class Encryption extends Resource {
       }
     )
 
-    this.key = new kms.KmsKey(
+    this.encryptionKey = new kms.KmsKey(
       this,
       uniqueId({
         prefix: kms.KmsKey,
@@ -81,7 +81,7 @@ export class Encryption extends Resource {
         suffix: 'ssm',
       }),
       {
-        targetKeyId: this.key.id,
+        targetKeyId: this.encryptionKey.id,
       }
     )
   }

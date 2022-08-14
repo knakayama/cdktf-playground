@@ -33,8 +33,8 @@ export class NWQ1Stack extends TerraformStack {
       partition: dataSources.partition,
     })
 
-    new ObjectStorage(this, 'object_storage', {
-      encryptionKey: encryption.key,
+    const objectStorage = new ObjectStorage(this, 'object_storage', {
+      encryptionKey: encryption.encryptionKey,
     })
 
     const lb = new LoadBalancer(this, 'load_balancer', {
@@ -45,6 +45,9 @@ export class NWQ1Stack extends TerraformStack {
       vpc: network.vpc,
       loadBalancerSG: lb.loadBalancerSG,
       privateSubnets: network.privateSubnets,
+      sessionLogBucket: objectStorage.sessionLogBucket,
+      partition: dataSources.partition,
+      encryptionKey: encryption.encryptionKey,
     })
   }
 }

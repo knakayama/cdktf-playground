@@ -8,6 +8,8 @@ interface ObjectStorageProps {
 }
 
 export class ObjectStorage extends Resource {
+  public readonly sessionLogBucket: s3.S3Bucket
+
   constructor(
     readonly scope: Construct,
     readonly name: string,
@@ -15,7 +17,7 @@ export class ObjectStorage extends Resource {
   ) {
     super(scope, name)
 
-    const bucketSsm = new s3.S3Bucket(
+    this.sessionLogBucket = new s3.S3Bucket(
       this,
       uniqueId({
         prefix: s3.S3Bucket,
@@ -33,7 +35,7 @@ export class ObjectStorage extends Resource {
         suffix: 'session_log',
       }),
       {
-        bucket: bucketSsm.bucket,
+        bucket: this.sessionLogBucket.bucket,
         rule: {
           objectOwnership: 'BucketOwnerEnforced',
         },
@@ -47,7 +49,7 @@ export class ObjectStorage extends Resource {
         suffix: 'session_log',
       }),
       {
-        bucket: bucketSsm.bucket,
+        bucket: this.sessionLogBucket.bucket,
         versioningConfiguration: {
           status: 'Enabled',
         },
@@ -61,7 +63,7 @@ export class ObjectStorage extends Resource {
         suffix: 'session_log',
       }),
       {
-        bucket: bucketSsm.id,
+        bucket: this.sessionLogBucket.id,
         rule: [
           {
             applyServerSideEncryptionByDefault: {
@@ -80,7 +82,7 @@ export class ObjectStorage extends Resource {
         suffix: 'session_log',
       }),
       {
-        bucket: bucketSsm.id,
+        bucket: this.sessionLogBucket.id,
         rule: [
           {
             id: 'archive_after_X_days',
@@ -106,8 +108,8 @@ export class ObjectStorage extends Resource {
         suffix: 'session_log',
       }),
       {
-        bucket: bucketSsm.id,
-        targetBucket: bucketSsm.id,
+        bucket: this.sessionLogBucket.id,
+        targetBucket: this.sessionLogBucket.id,
         targetPrefix: 'log/',
       }
     )
@@ -119,7 +121,7 @@ export class ObjectStorage extends Resource {
         suffix: 'session_log',
       }),
       {
-        bucket: bucketSsm.id,
+        bucket: this.sessionLogBucket.id,
         blockPublicAcls: true,
         blockPublicPolicy: true,
         ignorePublicAcls: true,
