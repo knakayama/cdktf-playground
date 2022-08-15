@@ -1,12 +1,12 @@
 import { Construct } from 'constructs'
 import { Resource } from 'cdktf'
-import { globalaccelerator, route53, s3 } from '@cdktf/provider-aws'
+import { elb, globalaccelerator, route53, s3 } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 import { awsRegion, defaultTag } from '../../modules/utils/constants'
-import { loadBalancerData } from '../../modules/utils/dataSources'
 
 interface GlobalLoadBalancerProps {
   hostedZone: route53.DataAwsRoute53Zone
+  loadBalancer: elb.DataAwsLb
 }
 
 export class GlobalLoadBalancer extends Resource {
@@ -78,10 +78,7 @@ export class GlobalLoadBalancer extends Resource {
         endpointConfiguration: [
           {
             clientIpPreservationEnabled: true,
-            endpointId: loadBalancerData({
-              scope: this,
-              suffix: 'this',
-            }).arn,
+            endpointId: props.loadBalancer.arn,
             weight: 128,
           },
         ],

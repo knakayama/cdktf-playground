@@ -12,7 +12,14 @@ import {
   availabilityZoneData,
   callerIdentityData,
   hostedZoneData,
+  kmsKeyData,
+  loadBalancerData,
+  loadBalancerSGData,
+  loadBalancerTargetGroupData,
   partitionData,
+  privateSubnetsData,
+  sessionLogBucketData,
+  vpcData,
 } from '../../modules/utils/dataSources'
 
 export class NWQ1Stack extends TerraformStack {
@@ -37,33 +44,67 @@ export class NWQ1Stack extends TerraformStack {
       azs,
     })
 
+    const vpc = vpcData({ scope: this, dependsOn: [network.vpc] })
+
     const encryption = new Encryption(this, 'encryption', {
       callerIdentity,
       partition,
     })
 
+    const kmsKey = kmsKeyData({
+      scope: this,
+      dependsOn: [encryption.kmsAlias],
+    })
+
     const objectStorage = new ObjectStorage(this, 'object_storage', {
-      encryptionKey: encryption.encryptionKey,
+      kmsKey,
+    })
+
+    const privateSubnets = privateSubnetsData({
+      scope: this,
+      dependsOn: network.privateSubnets.map((subnet) => subnet),
+    })
+
+    const loadBalancerClass = new LoadBalancer(this, 'load_balancer', {
+      vpc,
+      privateSubnets,
+      hostedZone,
+    })
+
+    const loadBalancer = loadBalancerData({
+      scope: this,
+      dependsOn: [loadBalancerClass.loadBalancer],
     })
 
     new GlobalLoadBalancer(this, 'global_load_balancer', {
       hostedZone,
+      loadBalancer,
     })
 
-    const lb = new LoadBalancer(this, 'load_balancer', {
-      vpc: network.vpc,
-      privateSubnets: network.privateSubnets,
-      hostedZone,
+    const loadBalancerSG = loadBalancerSGData({
+      scope: this,
+      dependsOn: [loadBalancerClass.loadBalancerSG],
+    })
+
+    const sessionLogBucket = sessionLogBucketData({
+      scope: this,
+      dependsOn: [objectStorage.sessionLogBucket],
+      bucketName: objectStorage.sessionLogBucket.bucket,
+    })
+
+    const loadBalancerTargetGroup = loadBalancerTargetGroupData({
+      scope: this,
+      dependsOn: [loadBalancerClass.loadBalancerTargetGroup],
     })
 
     new Compute(this, 'compute', {
-      vpc: network.vpc,
-      loadBalancerSG: lb.loadBalancerSG,
-      privateSubnets: network.privateSubnets,
-      sessionLogBucket: objectStorage.sessionLogBucket,
+      vpc,
+      loadBalancerSG,
+      privateSubnets,
+      sessionLogBucket,
       partition,
-      encryptionKey: encryption.encryptionKey,
-      loadBalancerTargetGroup: lb.loadBalancerTargetGroup,
+      kmsKey,
+      loadBalancerTargetGroup,
     })
   }
 }

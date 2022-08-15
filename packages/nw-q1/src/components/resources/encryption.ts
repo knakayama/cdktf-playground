@@ -2,7 +2,7 @@ import { Construct } from 'constructs'
 import { Resource } from 'cdktf'
 import { datasources, iam, kms } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
-import { awsRegion } from '../../modules/utils/constants'
+import { awsRegion, defaultTag } from '../../modules/utils/constants'
 
 interface EncryptionProps {
   partition: datasources.DataAwsPartition
@@ -10,7 +10,7 @@ interface EncryptionProps {
 }
 
 export class Encryption extends Resource {
-  public readonly encryptionKey: kms.KmsKey
+  public readonly kmsAlias: kms.KmsAlias
 
   constructor(
     readonly scope: Construct,
@@ -61,7 +61,7 @@ export class Encryption extends Resource {
       }
     )
 
-    this.encryptionKey = new kms.KmsKey(
+    const kmsKey = new kms.KmsKey(
       this,
       uniqueId({
         prefix: kms.KmsKey,
@@ -74,14 +74,15 @@ export class Encryption extends Resource {
       }
     )
 
-    new kms.KmsAlias(
+    this.kmsAlias = new kms.KmsAlias(
       this,
       uniqueId({
         prefix: kms.KmsAlias,
         suffix: 'ssm',
       }),
       {
-        targetKeyId: this.encryptionKey.id,
+        name: `alias/${defaultTag}`,
+        targetKeyId: kmsKey.id,
       }
     )
   }

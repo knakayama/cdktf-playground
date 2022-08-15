@@ -4,7 +4,7 @@ import { kms, s3 } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 
 interface ObjectStorageProps {
-  encryptionKey: kms.KmsKey
+  kmsKey: kms.DataAwsKmsKey
 }
 
 export class ObjectStorage extends Resource {
@@ -67,7 +67,7 @@ export class ObjectStorage extends Resource {
         rule: [
           {
             applyServerSideEncryptionByDefault: {
-              kmsMasterKeyId: props.encryptionKey.id,
+              kmsMasterKeyId: props.kmsKey.id,
               sseAlgorithm: 'aws:kms',
             },
           },

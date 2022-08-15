@@ -2,16 +2,18 @@ import { Construct } from 'constructs'
 import { Resource } from 'cdktf'
 import { vpc, elb, route53, acm } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
+import { defaultTag } from '../../modules/utils/constants'
 
 interface LoadBalancerProps {
-  vpc: vpc.Vpc
-  privateSubnets: vpc.Subnet[]
+  vpc: vpc.DataAwsVpc
+  privateSubnets: vpc.DataAwsSubnets
   hostedZone: route53.DataAwsRoute53Zone
 }
 
 export class LoadBalancer extends Resource {
   public readonly loadBalancerSG: vpc.SecurityGroup
   public readonly loadBalancerTargetGroup: elb.LbTargetGroup
+  public readonly loadBalancer: elb.Lb
 
   constructor(scope: Construct, name: string, props: LoadBalancerProps) {
     super(scope, name)
@@ -40,10 +42,14 @@ export class LoadBalancer extends Resource {
             cidrBlocks: ['0.0.0.0/0'],
           },
         ],
+        tags: {
+          Name: defaultTag,
+          UsedBy: 'load-balancer',
+        },
       }
     )
 
-    const lb = new elb.Lb(
+    this.loadBalancer = new elb.Lb(
       this,
       uniqueId({
         prefix: elb.Lb,
@@ -53,7 +59,7 @@ export class LoadBalancer extends Resource {
         internal: true,
         loadBalancerType: 'application',
         securityGroups: [this.loadBalancerSG.id],
-        subnets: props.privateSubnets.map((subnet) => subnet.id),
+        subnets: props.privateSubnets.ids,
       }
     )
 
@@ -88,7 +94,7 @@ export class LoadBalancer extends Resource {
         suffix: 'this',
       }),
       {
-        loadBalancerArn: lb.arn,
+        loadBalancerArn: this.loadBalancer.arn,
         port: 443,
         protocol: 'HTTPS',
         certificateArn: sslCert.arn,

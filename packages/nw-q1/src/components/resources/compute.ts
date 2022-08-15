@@ -15,13 +15,13 @@ import { uniqueId } from '@cdktf-playground/core/src'
 import * as path from 'path'
 
 interface ComputeProps {
-  vpc: vpc.Vpc
-  loadBalancerSG: vpc.SecurityGroup
-  privateSubnets: vpc.Subnet[]
+  vpc: vpc.DataAwsVpc
+  loadBalancerSG: vpc.DataAwsSecurityGroup
+  privateSubnets: vpc.DataAwsSubnets
   partition: datasources.DataAwsPartition
-  sessionLogBucket: s3.S3Bucket
-  encryptionKey: kms.KmsKey
-  loadBalancerTargetGroup: elb.LbTargetGroup
+  sessionLogBucket: s3.DataAwsS3Bucket
+  kmsKey: kms.DataAwsKmsKey
+  loadBalancerTargetGroup: elb.DataAwsLbTargetGroup
 }
 
 export class Compute extends Resource {
@@ -151,7 +151,7 @@ export class Compute extends Resource {
               'kms:Decrypt',
               'kms:Encrypt',
             ],
-            resources: [props.encryptionKey.arn],
+            resources: [props.kmsKey.arn],
           },
         ],
       }
@@ -239,7 +239,7 @@ export class Compute extends Resource {
           id: launchTemplate.id,
           version: '$Latest',
         },
-        vpcZoneIdentifier: props.privateSubnets.map((subnet) => subnet.id),
+        vpcZoneIdentifier: props.privateSubnets.ids,
         lifecycle: {
           ignoreChanges: ['desired_capacity', 'target_group_arns'],
         },
