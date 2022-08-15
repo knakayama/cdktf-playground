@@ -9,6 +9,7 @@ import {
   datasources,
   s3,
   kms,
+  elb,
 } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 import * as path from 'path'
@@ -20,6 +21,7 @@ interface ComputeProps {
   partition: datasources.DataAwsPartition
   sessionLogBucket: s3.S3Bucket
   encryptionKey: kms.KmsKey
+  loadBalancerTargetGroup: elb.LbTargetGroup
 }
 
 export class Compute extends Resource {
@@ -223,7 +225,7 @@ export class Compute extends Resource {
       }
     )
 
-    new autoscaling.AutoscalingGroup(
+    const autoscalingGroup = new autoscaling.AutoscalingGroup(
       this,
       uniqueId({
         prefix: autoscaling.AutoscalingGroup,
@@ -241,6 +243,18 @@ export class Compute extends Resource {
         lifecycle: {
           ignoreChanges: ['desired_capacity', 'target_group_arns'],
         },
+      }
+    )
+
+    new autoscaling.AutoscalingAttachment(
+      this,
+      uniqueId({
+        prefix: autoscaling.AutoscalingAttachment,
+        suffix: 'this',
+      }),
+      {
+        autoscalingGroupName: autoscalingGroup.id,
+        lbTargetGroupArn: props.loadBalancerTargetGroup.arn,
       }
     )
   }

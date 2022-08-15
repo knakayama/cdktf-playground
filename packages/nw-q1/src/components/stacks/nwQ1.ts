@@ -8,6 +8,7 @@ import { ObjectStorage } from '../resources/objectStorage'
 import { Encryption } from '../resources/encryption'
 import { LoadBalancer } from '../resources/loadBalancer'
 import { Compute } from '../resources/compute'
+import { GlobalLoadBalancer } from '../resources/globalLoadBalancer'
 
 export class NWQ1Stack extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -37,8 +38,12 @@ export class NWQ1Stack extends TerraformStack {
       encryptionKey: encryption.encryptionKey,
     })
 
+    const ga = new GlobalLoadBalancer(this, 'global_load_balancer')
+
     const lb = new LoadBalancer(this, 'load_balancer', {
       vpc: network.vpc,
+      privateSubnets: network.privateSubnets,
+      hostedZone: ga.hostedZone,
     })
 
     new Compute(this, 'compute', {
@@ -48,6 +53,7 @@ export class NWQ1Stack extends TerraformStack {
       sessionLogBucket: objectStorage.sessionLogBucket,
       partition: dataSources.partition,
       encryptionKey: encryption.encryptionKey,
+      loadBalancerTargetGroup: lb.loadBalancerTargetGroup,
     })
   }
 }

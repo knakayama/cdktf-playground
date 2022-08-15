@@ -1,5 +1,6 @@
 export const awsRegion = 'ap-northeast-1'
 export const defaultTag = 'nw-q1'
+export const domain = 'second.knakayama.io'
 
 export const CidrBlocks = {
   vpc: '192.168.0.0/16',
