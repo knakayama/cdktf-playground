@@ -3,12 +3,17 @@ import { TerraformStack } from 'cdktf'
 import { AwsProvider } from '@cdktf/provider-aws'
 import { awsRegion, defaultTag } from '../../modules/utils/constants'
 import { Network } from '../resources/network'
-import { DataSources } from '../resources/dataSources'
 import { ObjectStorage } from '../resources/objectStorage'
 import { Encryption } from '../resources/encryption'
 import { LoadBalancer } from '../resources/loadBalancer'
 import { Compute } from '../resources/compute'
 import { GlobalLoadBalancer } from '../resources/globalLoadBalancer'
+import {
+  availabilityZoneData,
+  callerIdentityData,
+  hostedZoneData,
+  partitionData,
+} from '../../modules/utils/dataSources'
 
 export class NWQ1Stack extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -23,27 +28,32 @@ export class NWQ1Stack extends TerraformStack {
       },
     })
 
-    const dataSources = new DataSources(this, 'data_sources')
+    const azs = availabilityZoneData({ scope: this })
+    const callerIdentity = callerIdentityData({ scope: this })
+    const partition = partitionData({ scope: this })
+    const hostedZone = hostedZoneData({ scope: this })
 
     const network = new Network(this, 'network', {
-      azs: dataSources.azs,
+      azs,
     })
 
     const encryption = new Encryption(this, 'encryption', {
-      callerIdentity: dataSources.callerIdentity,
-      partition: dataSources.partition,
+      callerIdentity,
+      partition,
     })
 
     const objectStorage = new ObjectStorage(this, 'object_storage', {
       encryptionKey: encryption.encryptionKey,
     })
 
-    const ga = new GlobalLoadBalancer(this, 'global_load_balancer')
+    new GlobalLoadBalancer(this, 'global_load_balancer', {
+      hostedZone,
+    })
 
     const lb = new LoadBalancer(this, 'load_balancer', {
       vpc: network.vpc,
       privateSubnets: network.privateSubnets,
-      hostedZone: ga.hostedZone,
+      hostedZone,
     })
 
     new Compute(this, 'compute', {
@@ -51,7 +61,7 @@ export class NWQ1Stack extends TerraformStack {
       loadBalancerSG: lb.loadBalancerSG,
       privateSubnets: network.privateSubnets,
       sessionLogBucket: objectStorage.sessionLogBucket,
-      partition: dataSources.partition,
+      partition,
       encryptionKey: encryption.encryptionKey,
       loadBalancerTargetGroup: lb.loadBalancerTargetGroup,
     })

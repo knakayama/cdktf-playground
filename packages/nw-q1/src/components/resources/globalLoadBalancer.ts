@@ -2,13 +2,15 @@ import { Construct } from 'constructs'
 import { Resource } from 'cdktf'
 import { globalaccelerator, route53, s3 } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
-import { awsRegion, defaultTag, domain } from '../../modules/utils/constants'
+import { awsRegion, defaultTag } from '../../modules/utils/constants'
 import { loadBalancerData } from '../../modules/utils/dataSources'
 
-export class GlobalLoadBalancer extends Resource {
-  public readonly hostedZone: route53.DataAwsRoute53Zone
+interface GlobalLoadBalancerProps {
+  hostedZone: route53.DataAwsRoute53Zone
+}
 
-  constructor(scope: Construct, name: string) {
+export class GlobalLoadBalancer extends Resource {
+  constructor(scope: Construct, name: string, props: GlobalLoadBalancerProps) {
     super(scope, name)
 
     const bucket = new s3.S3Bucket(
@@ -86,17 +88,6 @@ export class GlobalLoadBalancer extends Resource {
       }
     )
 
-    this.hostedZone = new route53.DataAwsRoute53Zone(
-      this,
-      uniqueId({
-        prefix: route53.DataAwsRoute53Zone,
-        suffix: 'this',
-      }),
-      {
-        name: domain,
-      }
-    )
-
     new route53.Route53Record(
       this,
       uniqueId({
@@ -104,8 +95,8 @@ export class GlobalLoadBalancer extends Resource {
         suffix: 'ga',
       }),
       {
-        zoneId: this.hostedZone.zoneId,
-        name: `ga.${this.hostedZone.name}`,
+        zoneId: props.hostedZone.zoneId,
+        name: `ga.${props.hostedZone.name}`,
         type: 'A',
         alias: [
           {

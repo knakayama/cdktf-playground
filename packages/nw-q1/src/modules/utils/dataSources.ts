@@ -1,31 +1,79 @@
 import { Construct } from 'constructs'
-import { elb } from '@cdktf/provider-aws'
+import { datasources, elb, route53 } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
-import { defaultTag } from './constants'
+import { defaultTag, domain } from './constants'
 
 interface DataOptions {
   scope: Construct
-  suffix: string
   tags?: {
     [id: string]: string
   }
 }
 
+type UniqueDataOptions = Pick<DataOptions, 'scope'>
+
 export const loadBalancerData = ({
   scope,
-  suffix,
   tags = {},
 }: DataOptions): elb.DataAwsLb =>
   new elb.DataAwsLb(
     scope,
     uniqueId({
       prefix: elb.DataAwsLb,
-      suffix,
+      suffix: 'this',
     }),
     {
       tags: {
         Name: defaultTag,
       },
       ...tags,
+    }
+  )
+
+export const availabilityZoneData = ({
+  scope,
+}: UniqueDataOptions): datasources.DataAwsAvailabilityZones =>
+  new datasources.DataAwsAvailabilityZones(
+    scope,
+    uniqueId({
+      prefix: datasources.DataAwsAvailabilityZones,
+      suffix: 'this',
+    }),
+    {
+      state: 'available',
+    }
+  )
+
+export const partitionData = ({
+  scope,
+}: UniqueDataOptions): datasources.DataAwsPartition =>
+  new datasources.DataAwsPartition(
+    scope,
+    uniqueId({
+      prefix: datasources.DataAwsPartition,
+      suffix: 'this',
+    })
+  )
+
+export const callerIdentityData = ({
+  scope,
+}: UniqueDataOptions): datasources.DataAwsCallerIdentity =>
+  new datasources.DataAwsCallerIdentity(
+    scope,
+    uniqueId({
+      prefix: datasources.DataAwsCallerIdentity,
+      suffix: 'this',
+    })
+  )
+
+export const hostedZoneData = ({ scope }: UniqueDataOptions) =>
+  new route53.DataAwsRoute53Zone(
+    scope,
+    uniqueId({
+      prefix: route53.DataAwsRoute53Zone,
+      suffix: 'this',
+    }),
+    {
+      name: domain,
     }
   )
