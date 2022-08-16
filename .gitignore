@@ -10,5 +10,5 @@ cdktf.out/
 !.yarn/versions
 *tfstate*
 dist/
-.gen/*
-!.gen/versions.json
+packages/*/src/.gen/*
+!packages/*/src/.gen/versions.json
