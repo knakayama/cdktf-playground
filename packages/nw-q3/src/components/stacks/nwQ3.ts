@@ -12,7 +12,6 @@ import {
   callerIdentityData,
   hostedZoneData,
   kmsKeyData,
-  loadBalancerSGData,
   loadBalancerTargetGroupData,
   partitionData,
   privateSubnetsData,
@@ -75,11 +74,6 @@ export class NWQ3Stack extends TerraformStack {
       hostedZone,
     })
 
-    const loadBalancerSG = loadBalancerSGData({
-      scope: this,
-      dependsOn: [loadBalancerClass.loadBalancerSG],
-    })
-
     const sessionLogBucket = sessionLogBucketData({
       scope: this,
       dependsOn: [objectStorage.sessionLogBucket],
@@ -93,7 +87,6 @@ export class NWQ3Stack extends TerraformStack {
 
     new Compute(this, 'compute', {
       vpcData: vpc,
-      loadBalancerSG,
       privateSubnets,
       sessionLogBucket,
       partition,

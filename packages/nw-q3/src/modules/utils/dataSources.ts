@@ -137,25 +137,6 @@ export const privateSubnetsData = ({
     }
   )
 
-export const loadBalancerSGData = ({
-  scope,
-  dependsOn,
-}: DataOptions): vpc.DataAwsSecurityGroup =>
-  new vpc.DataAwsSecurityGroup(
-    scope,
-    uniqueId({
-      prefix: vpc.DataAwsSecurityGroup,
-      suffix: 'this',
-    }),
-    {
-      dependsOn,
-      tags: {
-        Name: defaultTag,
-        UsedBy: 'load-balancer',
-      },
-    }
-  )
-
 export const sessionLogBucketData = ({
   scope,
   dependsOn,

@@ -2,7 +2,6 @@ import { Construct } from 'constructs'
 import { Resource } from 'cdktf'
 import { vpc, elb, route53 } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
-import { defaultTag } from '../../modules/utils/constants'
 
 interface LoadBalancerProps {
   vpcData: vpc.DataAwsVpc
@@ -11,7 +10,6 @@ interface LoadBalancerProps {
 }
 
 export class LoadBalancer extends Resource {
-  public readonly loadBalancerSG: vpc.SecurityGroup
   public readonly loadBalancerTargetGroup: elb.LbTargetGroup
   public readonly loadBalancer: elb.Lb
 
@@ -22,37 +20,6 @@ export class LoadBalancer extends Resource {
   ) {
     super(scope, name)
 
-    this.loadBalancerSG = new vpc.SecurityGroup(
-      this,
-      uniqueId({
-        prefix: vpc.SecurityGroup,
-        suffix: 'compute',
-      }),
-      {
-        vpcId: vpcData.id,
-        ingress: [
-          {
-            fromPort: 443,
-            toPort: 443,
-            protocol: 'tcp',
-            cidrBlocks: ['0.0.0.0/0'],
-          },
-        ],
-        egress: [
-          {
-            fromPort: 0,
-            toPort: 0,
-            protocol: '-1',
-            cidrBlocks: ['0.0.0.0/0'],
-          },
-        ],
-        tags: {
-          Name: defaultTag,
-          UsedBy: 'load-balancer',
-        },
-      }
-    )
-
     this.loadBalancer = new elb.Lb(
       this,
       uniqueId({
@@ -62,7 +29,6 @@ export class LoadBalancer extends Resource {
       {
         internal: true,
         loadBalancerType: 'network',
-        securityGroups: [this.loadBalancerSG.id],
         subnets: publicSubnets.ids,
       }
     )

@@ -16,7 +16,6 @@ import * as path from 'path'
 
 interface ComputeProps {
   vpcData: vpc.DataAwsVpc
-  loadBalancerSG: vpc.DataAwsSecurityGroup
   privateSubnets: vpc.DataAwsSubnets
   partition: datasources.DataAwsPartition
   sessionLogBucket: s3.DataAwsS3Bucket
@@ -30,7 +29,6 @@ export class Compute extends Resource {
     readonly name: string,
     {
       kmsKey,
-      loadBalancerSG,
       loadBalancerTargetGroup,
       partition,
       privateSubnets,
@@ -53,7 +51,7 @@ export class Compute extends Resource {
             fromPort: 443,
             toPort: 443,
             protocol: 'tcp',
-            securityGroups: [loadBalancerSG.id],
+            cidrBlocks: [vpcData.cidrBlock],
           },
         ],
         egress: [
