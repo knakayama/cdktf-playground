@@ -66,7 +66,7 @@ export class NWQ1Stack extends TerraformStack {
     })
 
     const loadBalancerClass = new LoadBalancer(this, 'load_balancer', {
-      vpc,
+      vpcData: vpc,
       privateSubnets,
       hostedZone,
     })

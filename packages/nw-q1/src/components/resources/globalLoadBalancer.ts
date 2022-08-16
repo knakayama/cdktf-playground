@@ -10,7 +10,11 @@ interface GlobalLoadBalancerProps {
 }
 
 export class GlobalLoadBalancer extends Resource {
-  constructor(scope: Construct, name: string, props: GlobalLoadBalancerProps) {
+  constructor(
+    readonly scope: Construct,
+    readonly name: string,
+    { hostedZone, loadBalancer }: GlobalLoadBalancerProps
+  ) {
     super(scope, name)
 
     const bucket = new s3.S3Bucket(
@@ -78,7 +82,7 @@ export class GlobalLoadBalancer extends Resource {
         endpointConfiguration: [
           {
             clientIpPreservationEnabled: true,
-            endpointId: props.loadBalancer.arn,
+            endpointId: loadBalancer.arn,
             weight: 128,
           },
         ],
@@ -92,8 +96,8 @@ export class GlobalLoadBalancer extends Resource {
         suffix: 'ga',
       }),
       {
-        zoneId: props.hostedZone.zoneId,
-        name: `ga.${props.hostedZone.name}`,
+        zoneId: hostedZone.zoneId,
+        name: `ga.${hostedZone.name}`,
         type: 'A',
         alias: [
           {

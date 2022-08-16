@@ -13,7 +13,7 @@ export class ObjectStorage extends Resource {
   constructor(
     readonly scope: Construct,
     readonly name: string,
-    props: ObjectStorageProps
+    { kmsKey }: ObjectStorageProps
   ) {
     super(scope, name)
 
@@ -67,7 +67,7 @@ export class ObjectStorage extends Resource {
         rule: [
           {
             applyServerSideEncryptionByDefault: {
-              kmsMasterKeyId: props.kmsKey.id,
+              kmsMasterKeyId: kmsKey.id,
               sseAlgorithm: 'aws:kms',
             },
           },

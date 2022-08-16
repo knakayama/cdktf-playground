@@ -19,7 +19,7 @@ export class Network extends Resource {
   constructor(
     readonly scope: Construct,
     readonly name: string,
-    readonly props: NetworkProps
+    { azs }: NetworkProps
   ) {
     super(scope, name)
 
@@ -48,7 +48,7 @@ export class Network extends Resource {
             vpcId: this.vpc.id,
             cidrBlock,
             availabilityZone: Fn.element(
-              props.azs.names,
+              azs.names,
               Fn.index(
                 CidrBlocks.publicSubnets as unknown as string[],
                 cidrBlock
@@ -73,7 +73,7 @@ export class Network extends Resource {
             vpcId: this.vpc.id,
             cidrBlock,
             availabilityZone: Fn.element(
-              props.azs.names,
+              azs.names,
               Fn.index(
                 CidrBlocks.privateSubnets as unknown as string[],
                 cidrBlock
@@ -98,7 +98,7 @@ export class Network extends Resource {
             vpcId: this.vpc.id,
             cidrBlock,
             availabilityZone: Fn.element(
-              props.azs.names,
+              azs.names,
               Fn.index(
                 CidrBlocks.isolatedSubnets as unknown as string[],
                 cidrBlock

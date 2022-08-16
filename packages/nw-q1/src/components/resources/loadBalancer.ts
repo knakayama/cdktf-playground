@@ -5,7 +5,7 @@ import { uniqueId } from '@cdktf-playground/core/src'
 import { defaultTag } from '../../modules/utils/constants'
 
 interface LoadBalancerProps {
-  vpc: vpc.DataAwsVpc
+  vpcData: vpc.DataAwsVpc
   privateSubnets: vpc.DataAwsSubnets
   hostedZone: route53.DataAwsRoute53Zone
 }
@@ -15,7 +15,11 @@ export class LoadBalancer extends Resource {
   public readonly loadBalancerTargetGroup: elb.LbTargetGroup
   public readonly loadBalancer: elb.Lb
 
-  constructor(scope: Construct, name: string, props: LoadBalancerProps) {
+  constructor(
+    readonly scope: Construct,
+    readonly name: string,
+    { hostedZone, privateSubnets, vpcData }: LoadBalancerProps
+  ) {
     super(scope, name)
 
     this.loadBalancerSG = new vpc.SecurityGroup(
@@ -25,7 +29,7 @@ export class LoadBalancer extends Resource {
         suffix: 'compute',
       }),
       {
-        vpcId: props.vpc.id,
+        vpcId: vpcData.id,
         ingress: [
           {
             fromPort: 443,
@@ -59,7 +63,7 @@ export class LoadBalancer extends Resource {
         internal: true,
         loadBalancerType: 'application',
         securityGroups: [this.loadBalancerSG.id],
-        subnets: props.privateSubnets.ids,
+        subnets: privateSubnets.ids,
       }
     )
 
@@ -70,7 +74,7 @@ export class LoadBalancer extends Resource {
         suffix: 'this',
       }),
       {
-        domain: props.hostedZone.name,
+        domain: hostedZone.name,
       }
     )
 
@@ -83,7 +87,7 @@ export class LoadBalancer extends Resource {
       {
         port: 80,
         protocol: 'HTTP',
-        vpcId: props.vpc.id,
+        vpcId: vpcData.id,
       }
     )
 

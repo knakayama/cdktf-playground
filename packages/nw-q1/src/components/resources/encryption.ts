@@ -15,7 +15,7 @@ export class Encryption extends Resource {
   constructor(
     readonly scope: Construct,
     readonly name: string,
-    props: EncryptionProps
+    { callerIdentity, partition }: EncryptionProps
   ) {
     super(scope, name)
 
@@ -33,7 +33,7 @@ export class Encryption extends Resource {
               {
                 type: 'AWS',
                 identifiers: [
-                  `arn:${props.partition.partition}:iam::${props.callerIdentity.accountId}:root`,
+                  `arn:${partition.partition}:iam::${callerIdentity.accountId}:root`,
                 ],
               },
             ],
