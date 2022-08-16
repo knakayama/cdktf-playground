@@ -21,6 +21,7 @@ import {
   sessionLogBucketData,
   vpcData,
 } from '../../modules/utils/dataSources'
+import { Waf } from '../resources/waf'
 
 export class NWQ1Stack extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -74,6 +75,10 @@ export class NWQ1Stack extends TerraformStack {
     const loadBalancer = loadBalancerData({
       scope: this,
       dependsOn: [loadBalancerClass.loadBalancer],
+    })
+
+    new Waf(this, 'waf', {
+      loadBalancer,
     })
 
     new GlobalLoadBalancer(this, 'global_load_balancer', {

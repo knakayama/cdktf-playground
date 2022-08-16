@@ -2,7 +2,7 @@
   "language": "typescript",
   "app": "npx ts-node src/main.ts",
   "sendCrashReports": "false",
-  "terraformProviders": [],
+  "terraformProviders": ["http"],
   "terraformModules": [],
   "context": {
     "excludeStackIdFromLogicalIds": "true",
