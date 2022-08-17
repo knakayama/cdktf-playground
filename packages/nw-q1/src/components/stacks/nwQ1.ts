@@ -22,6 +22,7 @@ import {
   vpcData,
 } from '../../modules/utils/dataSources'
 import { Waf } from '../resources/waf'
+import { HttpProvider } from '../../.gen/providers/http'
 
 export class NWQ1Stack extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -35,6 +36,8 @@ export class NWQ1Stack extends TerraformStack {
         },
       },
     })
+
+    new HttpProvider(this, 'http')
 
     const azs = availabilityZoneData({ scope: this })
     const callerIdentity = callerIdentityData({ scope: this })
