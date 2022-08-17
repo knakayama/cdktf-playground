@@ -3,6 +3,7 @@ import { datasources, elb, kms, s3, vpc } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 import { defaultTag } from './constants'
 import { ITerraformDependable } from 'cdktf'
+import * as hash from 'object-hash'
 
 interface DataOptions {
   scope: Construct
@@ -12,6 +13,11 @@ interface DataOptions {
 type IndependentDataOptions = Pick<DataOptions, 'scope'>
 type SessionLogBucketDataOptions = DataOptions & {
   bucketName: string
+}
+type TaggedDataOptions = DataOptions & {
+  tags: {
+    [key: string]: string
+  }
 }
 
 export const loadBalancerData = ({
@@ -68,18 +74,20 @@ export const callerIdentityData = ({
     })
   )
 
-export const vpcData = ({ scope, dependsOn }: DataOptions): vpc.DataAwsVpc =>
+export const vpcData = ({
+  scope,
+  dependsOn,
+  tags,
+}: TaggedDataOptions): vpc.DataAwsVpc =>
   new vpc.DataAwsVpc(
     scope,
     uniqueId({
       prefix: vpc.DataAwsVpc,
-      suffix: 'this',
+      suffix: hash(dependsOn),
     }),
     {
       dependsOn,
-      tags: {
-        Name: defaultTag,
-      },
+      tags,
     }
   )
 

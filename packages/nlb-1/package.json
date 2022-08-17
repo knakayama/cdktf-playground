@@ -8,6 +8,10 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@cdktf-playground/core": "^0.0.1"
+    "@cdktf-playground/core": "^0.0.1",
+    "object-hash": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/object-hash": "^2.2.1"
   }
 }
