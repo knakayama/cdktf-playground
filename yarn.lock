@@ -423,6 +423,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@cdktf-playground/nlb-1@workspace:packages/nlb-1":
+  version: 0.0.0-use.local
+  resolution: "@cdktf-playground/nlb-1@workspace:packages/nlb-1"
+  dependencies:
+    "@cdktf-playground/core": ^0.0.1
+  languageName: unknown
+  linkType: soft
+
 "@cdktf-playground/nw-q1@workspace:packages/nw-q1":
   version: 0.0.0-use.local
   resolution: "@cdktf-playground/nw-q1@workspace:packages/nw-q1"

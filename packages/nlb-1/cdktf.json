@@ -1,0 +1,21 @@
+{
+  "language": "typescript",
+  "app": "npx ts-node src/main.ts",
+  "sendCrashReports": "false",
+  "terraformProviders": [],
+  "terraformModules": [
+    {
+      "name": "network1",
+      "source": "./src/components/modules/network-1"
+    },
+    {
+      "name": "network2",
+      "source": "./src/components/modules/network-2"
+    }
+  ],
+  "context": {
+    "excludeStackIdFromLogicalIds": "true",
+    "allowSepCharsInLogicalIds": "true"
+  },
+  "projectId": "99b6fdce-35bf-4c91-9b6a-0a28b94d946c"
+}
