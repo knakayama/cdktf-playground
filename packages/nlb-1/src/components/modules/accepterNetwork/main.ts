@@ -1,6 +1,6 @@
 import { Construct } from 'constructs'
 import { TerraformModule } from 'cdktf'
-import { datasources } from '@cdktf/provider-aws'
+import { datasources, vpc } from '@cdktf/provider-aws'
 import { PrivateNetwork } from '../../resources/privateNetwork'
 
 interface AccepterNetworkProps {
@@ -12,6 +12,8 @@ interface AccepterNetworkProps {
 }
 
 export class AccepterNetwork extends TerraformModule {
+  public readonly vpc: vpc.Vpc
+
   constructor(
     readonly scope: Construct,
     readonly name: string,
@@ -27,12 +29,14 @@ export class AccepterNetwork extends TerraformModule {
       source: './src/components/modules/accepterNetwork',
     })
 
-    new PrivateNetwork(this, 'private_network', {
+    const network = new PrivateNetwork(this, 'private_network', {
       azs,
       cidrBlock,
       defaultTag,
       privateCidrBlocks1,
       privateCidrBlocks2,
     })
+
+    this.vpc = network.vpc
   }
 }

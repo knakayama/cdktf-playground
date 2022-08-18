@@ -1,9 +1,12 @@
 import { Construct } from 'constructs'
 import { TerraformModule } from 'cdktf'
-import { datasources } from '@cdktf/provider-aws'
+import { datasources, vpc } from '@cdktf/provider-aws'
 import { ClientCompute } from '../../resources/clientCompute'
 import { PublicNetwork } from '../../resources/publicNetwork'
-import { publicSubnetsData } from '../../../modules/utils/dataSources'
+import {
+  publicSubnetsData,
+  requesterVpcData,
+} from '../../../modules/utils/dataSources'
 
 interface RequesterNetworkProps {
   azs: datasources.DataAwsAvailabilityZones
@@ -14,6 +17,8 @@ interface RequesterNetworkProps {
 }
 
 export class RequesterNetwork extends TerraformModule {
+  public readonly vpc: vpc.Vpc
+
   constructor(
     readonly scope: Construct,
     readonly name: string,
@@ -37,10 +42,12 @@ export class RequesterNetwork extends TerraformModule {
       publicCidrBlocks,
     })
 
-    //const vpc = requesterVpcData({
-    //  scope: this,
-    //  dependsOn: [network.vpc],
-    //})
+    this.vpc = network.vpc
+
+    const vpc = requesterVpcData({
+      scope: this,
+      dependsOn: [this.vpc],
+    })
 
     const publicSubnets = publicSubnetsData({
       scope: this,
@@ -50,7 +57,7 @@ export class RequesterNetwork extends TerraformModule {
     new ClientCompute(this, 'client_compute', {
       defaultTag,
       publicSubnets,
-      vpcData: network.vpc,
+      vpcData: vpc,
     })
   }
 }

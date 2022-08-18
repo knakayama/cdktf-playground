@@ -5,7 +5,7 @@ import { uniqueId } from '@cdktf-playground/core/src'
 import * as path from 'path'
 
 interface ClientComputeProps {
-  vpcData: vpc.Vpc
+  vpcData: vpc.DataAwsVpc
   publicSubnets: vpc.DataAwsSubnets
   //instanceProfile: iam.DataAwsIamInstanceProfile
   defaultTag: string

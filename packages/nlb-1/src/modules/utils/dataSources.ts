@@ -168,7 +168,7 @@ export const publicSubnetsData = ({
     filter: [
       {
         name: 'tag:Name',
-        values: [`${defaultTag}-public-*`],
+        values: [`${requesterNetworkTag}-public-*`],
       },
     ],
   })
@@ -183,7 +183,7 @@ export const privateSubnetsData = ({
     filter: [
       {
         name: 'tag:Name',
-        values: [`${defaultTag}-private-*`],
+        values: [`${accepterNetworkTag}-private-*`],
       },
     ],
   })

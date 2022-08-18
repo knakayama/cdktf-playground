@@ -14,7 +14,7 @@ import { AccepterNetwork } from '../modules/accepterNetwork/main'
 //import { LoadBalancer } from '../resources/loadBalancer'
 import {
   availabilityZoneData,
-  //callerIdentityData,
+  callerIdentityData,
   //hostedZoneData,
   //kmsKeyData,
   //loadBalancerData,
@@ -24,9 +24,9 @@ import {
   //privateSubnetsData,
   //sessionLogBucketData,
   requesterVpcData,
-  //accepterVpcData,
+  accepterVpcData,
 } from '../../modules/utils/dataSources'
-//import { NetworkConnection } from '../resources/networkConnection'
+import { NetworkConnection } from '../resources/networkConnection'
 
 export class Nlb1Stack extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -42,7 +42,7 @@ export class Nlb1Stack extends TerraformStack {
     })
 
     const azs = availabilityZoneData({ scope: this })
-    //const callerIdentity = callerIdentityData({ scope: this })
+    const callerIdentity = callerIdentityData({ scope: this })
     //const partition = partitionData({ scope: this })
     //const hostedZone = hostedZoneData({ scope: this })
 
@@ -54,7 +54,7 @@ export class Nlb1Stack extends TerraformStack {
       privateCidrBlocks: ['192.168.100.0/24', '192.168.101.0/24'],
     })
 
-    new AccepterNetwork(this, 'accepter_network', {
+    const accepterNetwork = new AccepterNetwork(this, 'accepter_network', {
       azs,
       cidrBlock: '172.16.0.0/16',
       defaultTag: accepterNetworkTag,
@@ -62,21 +62,21 @@ export class Nlb1Stack extends TerraformStack {
       privateCidrBlocks2: ['172.16.101.0/24', '172.16.102.0/24'],
     })
 
-    requesterVpcData({
+    const requesterVpc = requesterVpcData({
       scope: this,
-      dependsOn: [requesterNetwork],
+      dependsOn: [requesterNetwork.vpc],
     })
 
-    //const accepterVpc = accepterVpcData({
-    //  scope: this,
-    //  dependsOn: [accepterNetwork],
-    //})
+    const accepterVpc = accepterVpcData({
+      scope: this,
+      dependsOn: [accepterNetwork.vpc],
+    })
 
-    //new NetworkConnection(this, 'network_connection', {
-    //  callerIdentity,
-    //  requesterVpc,
-    //  accepterVpc,
-    //})
+    new NetworkConnection(this, 'network_connection', {
+      callerIdentity,
+      requesterVpc,
+      accepterVpc,
+    })
 
     //const encryption = new Encryption(this, 'encryption', {
     //  callerIdentity,
