@@ -1,6 +1,6 @@
 import { Construct } from 'constructs'
 import { TerraformModule } from 'cdktf'
-import { datasources, vpc } from '@cdktf/provider-aws'
+import { datasources, iam, vpc } from '@cdktf/provider-aws'
 import { PrivateNetwork } from '../../resources/privateNetwork'
 import {
   accepterVpcData,
@@ -14,6 +14,7 @@ interface AccepterNetworkProps {
   defaultTag: string
   privateCidrBlocks1: string[]
   privateCidrBlocks2: string[]
+  instanceProfile: iam.DataAwsIamInstanceProfile
 }
 
 export class AccepterNetwork extends TerraformModule {
@@ -28,6 +29,7 @@ export class AccepterNetwork extends TerraformModule {
       privateCidrBlocks1,
       azs,
       privateCidrBlocks2,
+      instanceProfile,
     }: AccepterNetworkProps
   ) {
     super(scope, name, {
@@ -58,6 +60,7 @@ export class AccepterNetwork extends TerraformModule {
       defaultTag,
       privateSubnets,
       vpcData: vpc,
+      instanceProfile,
     })
   }
 }

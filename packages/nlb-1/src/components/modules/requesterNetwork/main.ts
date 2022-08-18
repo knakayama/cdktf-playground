@@ -1,6 +1,6 @@
 import { Construct } from 'constructs'
 import { TerraformModule } from 'cdktf'
-import { datasources, vpc } from '@cdktf/provider-aws'
+import { datasources, iam, vpc } from '@cdktf/provider-aws'
 import { ClientCompute } from '../../resources/clientCompute'
 import { PublicNetwork } from '../../resources/publicNetwork'
 import {
@@ -14,6 +14,7 @@ interface RequesterNetworkProps {
   defaultTag: string
   publicCidrBlocks: string[]
   privateCidrBlocks: string[]
+  instanceProfile: iam.DataAwsIamInstanceProfile
 }
 
 export class RequesterNetwork extends TerraformModule {
@@ -28,6 +29,7 @@ export class RequesterNetwork extends TerraformModule {
       publicCidrBlocks,
       azs,
       privateCidrBlocks,
+      instanceProfile,
     }: RequesterNetworkProps
   ) {
     super(scope, name, {
@@ -58,6 +60,7 @@ export class RequesterNetwork extends TerraformModule {
       defaultTag,
       publicSubnets,
       vpcData: vpc,
+      instanceProfile,
     })
   }
 }

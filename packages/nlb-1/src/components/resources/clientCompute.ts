@@ -1,13 +1,13 @@
 import { Construct } from 'constructs'
 import { Fn, Resource } from 'cdktf'
-import { ssm, vpc, ec2 } from '@cdktf/provider-aws'
+import { ssm, vpc, ec2, iam } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 import * as path from 'path'
 
 interface ClientComputeProps {
   vpcData: vpc.DataAwsVpc
   publicSubnets: vpc.DataAwsSubnets
-  //instanceProfile: iam.DataAwsIamInstanceProfile
+  instanceProfile: iam.DataAwsIamInstanceProfile
   defaultTag: string
 }
 
@@ -15,7 +15,7 @@ export class ClientCompute extends Resource {
   constructor(
     readonly scope: Construct,
     readonly name: string,
-    { publicSubnets, vpcData, defaultTag }: ClientComputeProps
+    { publicSubnets, vpcData, defaultTag, instanceProfile }: ClientComputeProps
   ) {
     super(scope, name)
 
@@ -62,7 +62,7 @@ export class ClientCompute extends Resource {
           path.join(__dirname, '../../modules/artifacts/user-data.sh')
         ),
         vpcSecurityGroupIds: [sg.id],
-        //iamInstanceProfile: instanceProfile.name,
+        iamInstanceProfile: instanceProfile.name,
         subnetId: Fn.element(publicSubnets.ids, 0),
         lifecycle: {
           createBeforeDestroy: true,

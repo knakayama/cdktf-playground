@@ -1,5 +1,5 @@
 import { Construct } from 'constructs'
-import { datasources, elb, kms, s3, vpc } from '@cdktf/provider-aws'
+import { datasources, elb, iam, kms, s3, vpc } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 import {
   accepterNetworkTag,
@@ -28,6 +28,9 @@ type FilteredDataOptions = DataOptions & {
     name: string
     values: string[]
   }[]
+}
+type InstanceProfileDataOptions = DataOptions & {
+  name: string
 }
 
 export const loadBalancerData = ({
@@ -239,5 +242,22 @@ export const loadBalancerTargetGroupData = ({
       tags: {
         Name: defaultTag,
       },
+    }
+  )
+
+export const instanceProfileData = ({
+  scope,
+  dependsOn,
+  name,
+}: InstanceProfileDataOptions): iam.DataAwsIamInstanceProfile =>
+  new iam.DataAwsIamInstanceProfile(
+    scope,
+    uniqueId({
+      prefix: iam.DataAwsIamInstanceProfile,
+      suffix: hash(dependsOn),
+    }),
+    {
+      dependsOn,
+      name,
     }
   )

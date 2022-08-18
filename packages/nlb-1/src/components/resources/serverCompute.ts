@@ -1,21 +1,30 @@
 import { Construct } from 'constructs'
-import { Fn, Resource, TerraformIterator } from 'cdktf'
-import { ssm, vpc, ec2 } from '@cdktf/provider-aws'
+import { Fn, Resource } from 'cdktf'
+import { ssm, vpc, ec2, iam } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 import * as path from 'path'
 
 interface ServerComputeProps {
   vpcData: vpc.DataAwsVpc
   privateSubnets: vpc.DataAwsSubnets
-  //instanceProfile: iam.DataAwsIamInstanceProfile
+  instanceProfile: iam.DataAwsIamInstanceProfile
   defaultTag: string
+}
+
+interface MakeInstanceOptions {
+  ami: ssm.DataAwsSsmParameter
+  defaultTag: string
+  subnetId: string
+  sg: vpc.SecurityGroup
+  id: string
+  instanceProfile: iam.DataAwsIamInstanceProfile
 }
 
 export class ServerCompute extends Resource {
   constructor(
     readonly scope: Construct,
     readonly name: string,
-    { privateSubnets, vpcData, defaultTag }: ServerComputeProps
+    { privateSubnets, vpcData, defaultTag, instanceProfile }: ServerComputeProps
   ) {
     super(scope, name)
 
@@ -49,24 +58,62 @@ export class ServerCompute extends Resource {
       }
     )
 
-    const privateSubnetIterator = TerraformIterator.fromList(privateSubnets.ids)
+    // TODO: This causes the error message below:
+    // The "for_each" set includes values derived from resource attributes that
+    // cannot be determined until apply, and so Terraform cannot determine the
+    // full set of keys that will identify the instances of this resource.
+    //
+    // When working with unknown values in for_each, it's better to use a map
+    // value where the keys are defined statically in your configuration and where
+    // only the values contain apply-time results.
+    //
+    // Alternatively, you could use the -target planning option to first apply
+    // only the resources that the for_each value depends on, and then apply a
+    // second time to fully converge.
+    //const privateSubnetIterator = TerraformIterator.fromList(privateSubnets.ids)
 
+    this.#makeInstance({
+      ami,
+      defaultTag,
+      subnetId: Fn.element(privateSubnets.ids, 0),
+      sg,
+      id: 'compute1',
+      instanceProfile,
+    })
+
+    this.#makeInstance({
+      ami,
+      defaultTag,
+      subnetId: Fn.element(privateSubnets.ids, 1),
+      sg,
+      id: 'compute2',
+      instanceProfile,
+    })
+  }
+
+  #makeInstance({
+    ami,
+    defaultTag,
+    subnetId,
+    sg,
+    id,
+    instanceProfile,
+  }: MakeInstanceOptions): void {
     new ec2.Instance(
       this,
       uniqueId({
         prefix: ec2.Instance,
-        suffix: 'compute',
+        suffix: `compute_${id}`,
       }),
       {
-        forEach: privateSubnetIterator,
         ami: ami.value,
         instanceType: 't2.micro',
         userData: Fn.filebase64(
           path.join(__dirname, '../../modules/artifacts/user-data.sh')
         ),
         vpcSecurityGroupIds: [sg.id],
-        //iamInstanceProfile: instanceProfile.name,
-        subnetId: privateSubnetIterator.value,
+        iamInstanceProfile: instanceProfile.name,
+        subnetId,
         lifecycle: {
           createBeforeDestroy: true,
         },
