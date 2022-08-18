@@ -13,6 +13,7 @@ interface PrivateNetworkProps {
 
 export class PrivateNetwork extends Resource {
   public readonly vpc: vpc.Vpc
+  public readonly privateSubnets: vpc.Subnet[]
 
   constructor(
     readonly scope: Construct,
@@ -120,6 +121,8 @@ export class PrivateNetwork extends Resource {
           }
         )
     )
+
+    this.privateSubnets = [privateSubnets1[0], privateSubnets2[0]]
 
     //privateRouteTables2.forEach((routeTable, idx) => {
     //  new vpc.Route(

@@ -2,6 +2,11 @@ import { Construct } from 'constructs'
 import { TerraformModule } from 'cdktf'
 import { datasources, vpc } from '@cdktf/provider-aws'
 import { PrivateNetwork } from '../../resources/privateNetwork'
+import {
+  accepterVpcData,
+  privateSubnetsData,
+} from '../../../modules/utils/dataSources'
+import { ServerCompute } from '../../resources/serverCompute'
 
 interface AccepterNetworkProps {
   azs: datasources.DataAwsAvailabilityZones
@@ -38,5 +43,21 @@ export class AccepterNetwork extends TerraformModule {
     })
 
     this.vpc = network.vpc
+
+    const vpc = accepterVpcData({
+      scope: this,
+      dependsOn: [this.vpc],
+    })
+
+    const privateSubnets = privateSubnetsData({
+      scope: this,
+      dependsOn: network.privateSubnets.map((subnet) => subnet),
+    })
+
+    new ServerCompute(this, 'client_compute', {
+      defaultTag,
+      privateSubnets,
+      vpcData: vpc,
+    })
   }
 }
