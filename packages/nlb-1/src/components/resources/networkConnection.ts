@@ -3,17 +3,17 @@ import { Resource } from 'cdktf'
 import { vpc, datasources } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 
-interface NetworkProps {
-  vpc1: vpc.DataAwsVpc
-  vpc2: vpc.DataAwsVpc
+interface NetworkConnectionProps {
+  requesterVpc: vpc.DataAwsVpc
+  accepterVpc: vpc.DataAwsVpc
   callerIdentity: datasources.DataAwsCallerIdentity
 }
 
-export class Network extends Resource {
+export class NetworkConnection extends Resource {
   constructor(
     readonly scope: Construct,
     readonly name: string,
-    { vpc1, vpc2, callerIdentity }: NetworkProps
+    { requesterVpc, accepterVpc, callerIdentity }: NetworkConnectionProps
   ) {
     super(scope, name)
 
@@ -24,8 +24,8 @@ export class Network extends Resource {
         suffix: 'this',
       }),
       {
-        vpcId: vpc1.id,
-        peerVpcId: vpc2.id,
+        vpcId: requesterVpc.id,
+        peerVpcId: accepterVpc.id,
         peerOwnerId: callerIdentity.accountId,
         autoAccept: true,
         accepter: {

@@ -1,9 +1,9 @@
 import { Construct } from 'constructs'
-import { Fn, TerraformModule } from 'cdktf'
+import { Fn, Resource } from 'cdktf'
 import { vpc, datasources, ec2 } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 
-interface Network2Props {
+interface PublicNetworkProps {
   azs: datasources.DataAwsAvailabilityZones
   cidrBlock: string
   defaultTag: string
@@ -11,8 +11,9 @@ interface Network2Props {
   privateCidrBlocks: string[]
 }
 
-export class Network1 extends TerraformModule {
+export class PublicNetwork extends Resource {
   public readonly vpc: vpc.Vpc
+  public readonly publicSubnets: vpc.Subnet[]
 
   constructor(
     readonly scope: Construct,
@@ -23,11 +24,9 @@ export class Network1 extends TerraformModule {
       publicCidrBlocks,
       azs,
       privateCidrBlocks,
-    }: Network2Props
+    }: PublicNetworkProps
   ) {
-    super(scope, name, {
-      source: './src/components/modules/network-1',
-    })
+    super(scope, name)
 
     this.vpc = new vpc.Vpc(
       this,
@@ -45,7 +44,7 @@ export class Network1 extends TerraformModule {
       }
     )
 
-    const publicSubnets = publicCidrBlocks.map(
+    this.publicSubnets = publicCidrBlocks.map(
       (cidrBlock, idx) =>
         new vpc.Subnet(
           this,
@@ -103,7 +102,7 @@ export class Network1 extends TerraformModule {
         )
     )
 
-    const natGateways = publicSubnets.map(
+    const natGateways = this.publicSubnets.map(
       (subnet, idx) =>
         new vpc.NatGateway(
           this,
@@ -147,7 +146,7 @@ export class Network1 extends TerraformModule {
       }
     )
 
-    publicSubnets.forEach(
+    this.publicSubnets.forEach(
       (subnet, idx) =>
         new vpc.RouteTableAssociation(
           this,

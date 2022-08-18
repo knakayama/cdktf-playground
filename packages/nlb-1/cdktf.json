@@ -5,12 +5,12 @@
   "terraformProviders": [],
   "terraformModules": [
     {
-      "name": "network1",
-      "source": "./src/components/modules/network-1"
+      "name": "requesterNetwork",
+      "source": "./src/components/modules/requesterNetwork"
     },
     {
-      "name": "network2",
-      "source": "./src/components/modules/network-2"
+      "name": "accepterNetwork",
+      "source": "./src/components/modules/accepterNetwork"
     }
   ],
   "context": {

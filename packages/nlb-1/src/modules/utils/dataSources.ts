@@ -1,7 +1,11 @@
 import { Construct } from 'constructs'
 import { datasources, elb, kms, s3, vpc } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
-import { defaultTag } from './constants'
+import {
+  accepterNetworkTag,
+  defaultTag,
+  requesterNetworkTag,
+} from './constants'
 import { ITerraformDependable } from 'cdktf'
 import * as hash from 'object-hash'
 
@@ -18,6 +22,12 @@ type TaggedDataOptions = DataOptions & {
   tags: {
     [key: string]: string
   }
+}
+type FilteredDataOptions = DataOptions & {
+  filter: {
+    name: string
+    values: string[]
+  }[]
 }
 
 export const loadBalancerData = ({
@@ -74,7 +84,7 @@ export const callerIdentityData = ({
     })
   )
 
-export const vpcData = ({
+const vpcData = ({
   scope,
   dependsOn,
   tags,
@@ -90,6 +100,30 @@ export const vpcData = ({
       tags,
     }
   )
+
+export const requesterVpcData = ({
+  scope,
+  dependsOn,
+}: DataOptions): vpc.DataAwsVpc =>
+  vpcData({
+    scope,
+    dependsOn,
+    tags: {
+      Name: requesterNetworkTag,
+    },
+  })
+
+export const accepterVpcData = ({
+  scope,
+  dependsOn,
+}: DataOptions): vpc.DataAwsVpc =>
+  vpcData({
+    scope,
+    dependsOn,
+    tags: {
+      Name: accepterNetworkTag,
+    },
+  })
 
 export const kmsKeyData = ({
   scope,
@@ -107,10 +141,11 @@ export const kmsKeyData = ({
     }
   )
 
-export const privateSubnetsData = ({
+const subnetsData = ({
   scope,
   dependsOn,
-}: DataOptions): vpc.DataAwsSubnets =>
+  filter,
+}: FilteredDataOptions): vpc.DataAwsSubnets =>
   new vpc.DataAwsSubnets(
     scope,
     uniqueId({
@@ -119,14 +154,39 @@ export const privateSubnetsData = ({
     }),
     {
       dependsOn,
-      filter: [
-        {
-          name: 'tag:Name',
-          values: [`${defaultTag}-private-*`],
-        },
-      ],
+      filter,
     }
   )
+
+export const publicSubnetsData = ({
+  scope,
+  dependsOn,
+}: DataOptions): vpc.DataAwsSubnets =>
+  subnetsData({
+    scope,
+    dependsOn,
+    filter: [
+      {
+        name: 'tag:Name',
+        values: [`${defaultTag}-public-*`],
+      },
+    ],
+  })
+
+export const privateSubnetsData = ({
+  scope,
+  dependsOn,
+}: DataOptions): vpc.DataAwsSubnets =>
+  subnetsData({
+    scope,
+    dependsOn,
+    filter: [
+      {
+        name: 'tag:Name',
+        values: [`${defaultTag}-private-*`],
+      },
+    ],
+  })
 
 export const loadBalancerSGData = ({
   scope,

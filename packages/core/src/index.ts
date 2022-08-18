@@ -7,5 +7,5 @@ interface UniqueIdOptions {
   suffix: string
 }
 
-export const uniqueId = ({ prefix, suffix }: UniqueIdOptions) =>
+export const uniqueId = ({ prefix, suffix }: UniqueIdOptions): string =>
   `${snakeCase(prefix.name)}_${suffix}`

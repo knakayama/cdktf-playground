@@ -1,9 +1,9 @@
 import { Construct } from 'constructs'
-import { Fn, TerraformModule } from 'cdktf'
+import { Fn, Resource } from 'cdktf'
 import { vpc, datasources } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 
-interface Network2Props {
+interface PrivateNetworkProps {
   azs: datasources.DataAwsAvailabilityZones
   cidrBlock: string
   defaultTag: string
@@ -11,7 +11,7 @@ interface Network2Props {
   privateCidrBlocks2: string[]
 }
 
-export class Network2 extends TerraformModule {
+export class PrivateNetwork extends Resource {
   public readonly vpc: vpc.Vpc
 
   constructor(
@@ -21,13 +21,11 @@ export class Network2 extends TerraformModule {
       cidrBlock,
       defaultTag,
       privateCidrBlocks1,
-      azs,
       privateCidrBlocks2,
-    }: Network2Props
+      azs,
+    }: PrivateNetworkProps
   ) {
-    super(scope, name, {
-      source: './src/components/modules/network-1',
-    })
+    super(scope, name)
 
     this.vpc = new vpc.Vpc(
       this,
