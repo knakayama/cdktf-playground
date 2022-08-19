@@ -15,7 +15,7 @@ import {
   privateSubnetsData,
   sessionLogBucketData,
   vpcData,
-} from '../../modules/utils/dataSources'
+} from '../../modules/utils/data'
 import { DNS } from '../resources/dns'
 
 export class NWQ2Stack extends TerraformStack {

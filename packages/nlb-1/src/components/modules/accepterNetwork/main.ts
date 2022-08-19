@@ -5,7 +5,7 @@ import { PrivateNetwork } from '../../resources/privateNetwork'
 import {
   accepterVpcData,
   privateSubnetsData,
-} from '../../../modules/utils/dataSources'
+} from '../../../modules/utils/data'
 import { ServerCompute } from '../../resources/serverCompute'
 
 interface AccepterNetworkProps {

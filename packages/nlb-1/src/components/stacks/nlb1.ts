@@ -21,7 +21,7 @@ import {
   requesterVpcData,
   accepterVpcData,
   instanceProfileData,
-} from '../../modules/utils/dataSources'
+} from '../../modules/utils/data'
 import { NetworkConnection } from '../resources/networkConnection'
 import { InstanceProfile } from '../resources/instanceProfile'
 

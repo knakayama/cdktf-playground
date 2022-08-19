@@ -20,7 +20,7 @@ import {
   privateSubnetsData,
   sessionLogBucketData,
   vpcData,
-} from '../../modules/utils/dataSources'
+} from '../../modules/utils/data'
 import { Waf } from '../resources/waf'
 import { HttpProvider } from '../../.gen/providers/http'
 

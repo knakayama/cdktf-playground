@@ -18,7 +18,7 @@ import {
   publicSubnetsData,
   sessionLogBucketData,
   vpcData,
-} from '../../modules/utils/dataSources'
+} from '../../modules/utils/data'
 
 export class NWQ3Stack extends TerraformStack {
   constructor(scope: Construct, name: string) {

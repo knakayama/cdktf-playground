@@ -6,7 +6,7 @@ import { PublicNetwork } from '../../resources/publicNetwork'
 import {
   publicSubnetsData,
   requesterVpcData,
-} from '../../../modules/utils/dataSources'
+} from '../../../modules/utils/data'
 
 interface RequesterNetworkProps {
   azs: datasources.DataAwsAvailabilityZones
