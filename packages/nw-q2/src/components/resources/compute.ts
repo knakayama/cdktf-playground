@@ -1,5 +1,5 @@
 import { Construct } from 'constructs'
-import { Fn, Resource } from 'cdktf'
+import { Fn } from 'cdktf'
 import { ssm, vpc, ec2, iam, datasources, s3, kms } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 
@@ -11,7 +11,7 @@ interface ComputeProps {
   kmsKey: kms.DataAwsKmsKey
 }
 
-export class Compute extends Resource {
+export class Compute extends Construct {
   constructor(
     readonly scope: Construct,
     readonly name: string,

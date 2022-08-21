@@ -1,5 +1,5 @@
 import { Construct } from 'constructs'
-import { Fn, Resource } from 'cdktf'
+import { Fn } from 'cdktf'
 import { ssm, vpc, ec2, iam } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 import * as path from 'path'
@@ -20,7 +20,7 @@ interface MakeInstanceOptions {
   instanceProfile: iam.DataAwsIamInstanceProfile
 }
 
-export class ServerCompute extends Resource {
+export class ServerCompute extends Construct {
   constructor(
     readonly scope: Construct,
     readonly name: string,

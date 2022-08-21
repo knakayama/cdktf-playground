@@ -1,5 +1,5 @@
 import { Construct } from 'constructs'
-import { Resource, Fn } from 'cdktf'
+import { Fn } from 'cdktf'
 import { vpc, datasources, ec2, iam } from '@cdktf/provider-aws'
 import {
   awsRegion,
@@ -12,7 +12,7 @@ interface NetworkProps {
   azs: datasources.DataAwsAvailabilityZones
 }
 
-export class Network extends Resource {
+export class Network extends Construct {
   public readonly vpc: vpc.Vpc
   public readonly privateSubnets: vpc.Subnet[]
   public readonly publicSubnets: vpc.Subnet[]

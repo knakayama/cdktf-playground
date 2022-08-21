@@ -1,5 +1,4 @@
 import { Construct } from 'constructs'
-import { Resource } from 'cdktf'
 import { vpc, elb, route53, acm } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 import { defaultTag } from '../../modules/utils/constants'
@@ -10,7 +9,7 @@ interface LoadBalancerProps {
   hostedZone: route53.DataAwsRoute53Zone
 }
 
-export class LoadBalancer extends Resource {
+export class LoadBalancer extends Construct {
   public readonly loadBalancerSG: vpc.SecurityGroup
   public readonly loadBalancerTargetGroup: elb.LbTargetGroup
   public readonly loadBalancer: elb.Lb

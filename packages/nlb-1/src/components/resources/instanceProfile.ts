@@ -1,5 +1,4 @@
 import { Construct } from 'constructs'
-import { Resource } from 'cdktf'
 import { iam, datasources, s3, kms } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 
@@ -10,7 +9,7 @@ interface ClientComputeProps {
   defaultTag: string
 }
 
-export class InstanceProfile extends Resource {
+export class InstanceProfile extends Construct {
   public readonly instanceProfile: iam.IamInstanceProfile
 
   constructor(

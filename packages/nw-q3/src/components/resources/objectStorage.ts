@@ -1,5 +1,4 @@
 import { Construct } from 'constructs'
-import { Resource } from 'cdktf'
 import { kms, s3 } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 
@@ -7,7 +6,7 @@ interface ObjectStorageProps {
   kmsKey: kms.DataAwsKmsKey
 }
 
-export class ObjectStorage extends Resource {
+export class ObjectStorage extends Construct {
   public readonly sessionLogBucket: s3.S3Bucket
 
   constructor(

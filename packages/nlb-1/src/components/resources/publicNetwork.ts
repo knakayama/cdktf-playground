@@ -1,5 +1,5 @@
 import { Construct } from 'constructs'
-import { Fn, Resource } from 'cdktf'
+import { Fn } from 'cdktf'
 import { vpc, datasources, ec2 } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 
@@ -11,7 +11,7 @@ interface PublicNetworkProps {
   privateCidrBlocks: string[]
 }
 
-export class PublicNetwork extends Resource {
+export class PublicNetwork extends Construct {
   public readonly vpc: vpc.Vpc
   public readonly publicSubnets: vpc.Subnet[]
 

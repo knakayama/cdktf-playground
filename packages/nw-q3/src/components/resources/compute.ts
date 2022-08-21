@@ -1,5 +1,5 @@
 import { Construct } from 'constructs'
-import { Fn, Resource } from 'cdktf'
+import { Fn } from 'cdktf'
 import {
   autoscaling,
   ssm,
@@ -23,7 +23,7 @@ interface ComputeProps {
   loadBalancerTargetGroup: elb.DataAwsLbTargetGroup
 }
 
-export class Compute extends Resource {
+export class Compute extends Construct {
   constructor(
     readonly scope: Construct,
     readonly name: string,

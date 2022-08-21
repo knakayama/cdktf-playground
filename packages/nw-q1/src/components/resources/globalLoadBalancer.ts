@@ -1,5 +1,4 @@
 import { Construct } from 'constructs'
-import { Resource } from 'cdktf'
 import { elb, globalaccelerator, route53, s3 } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 import { awsRegion, defaultTag } from '../../modules/utils/constants'
@@ -9,7 +8,7 @@ interface GlobalLoadBalancerProps {
   loadBalancer: elb.DataAwsLb
 }
 
-export class GlobalLoadBalancer extends Resource {
+export class GlobalLoadBalancer extends Construct {
   constructor(
     readonly scope: Construct,
     readonly name: string,

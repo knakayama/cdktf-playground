@@ -1,5 +1,4 @@
 import { Construct } from 'constructs'
-import { Resource } from 'cdktf'
 import { vpc, route53 } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 import { domain } from '../../modules/utils/constants'
@@ -9,7 +8,7 @@ interface DNSProps {
   vpc: vpc.DataAwsVpc
 }
 
-export class DNS extends Resource {
+export class DNS extends Construct {
   constructor(
     readonly scope: Construct,
     readonly name: string,

@@ -1,5 +1,4 @@
 import { Construct } from 'constructs'
-import { Resource } from 'cdktf'
 import { vpc, datasources } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 
@@ -9,7 +8,7 @@ interface NetworkConnectionProps {
   callerIdentity: datasources.DataAwsCallerIdentity
 }
 
-export class NetworkConnection extends Resource {
+export class NetworkConnection extends Construct {
   constructor(
     readonly scope: Construct,
     readonly name: string,

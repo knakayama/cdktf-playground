@@ -1,5 +1,5 @@
 import { Construct } from 'constructs'
-import { Fn, Resource } from 'cdktf'
+import { Fn } from 'cdktf'
 import { ssm, vpc, ec2, iam } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 import * as path from 'path'
@@ -11,7 +11,7 @@ interface ClientComputeProps {
   defaultTag: string
 }
 
-export class ClientCompute extends Resource {
+export class ClientCompute extends Construct {
   constructor(
     readonly scope: Construct,
     readonly name: string,

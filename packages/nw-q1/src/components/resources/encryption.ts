@@ -1,5 +1,4 @@
 import { Construct } from 'constructs'
-import { Resource } from 'cdktf'
 import { datasources, iam, kms } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 import { awsRegion, defaultTag } from '../../modules/utils/constants'
@@ -9,7 +8,7 @@ interface EncryptionProps {
   callerIdentity: datasources.DataAwsCallerIdentity
 }
 
-export class Encryption extends Resource {
+export class Encryption extends Construct {
   public readonly kmsAlias: kms.KmsAlias
 
   constructor(

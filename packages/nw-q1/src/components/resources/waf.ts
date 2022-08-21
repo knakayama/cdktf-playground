@@ -1,5 +1,5 @@
 import { Construct } from 'constructs'
-import { Fn, Resource } from 'cdktf'
+import { Fn } from 'cdktf'
 import { elb, wafv2 } from '@cdktf/provider-aws'
 import { uniqueId } from '@cdktf-playground/core/src'
 import { defaultTag } from '../../modules/utils/constants'
@@ -9,7 +9,7 @@ interface WafProps {
   loadBalancer: elb.DataAwsLb
 }
 
-export class Waf extends Resource {
+export class Waf extends Construct {
   constructor(
     readonly scope: Construct,
     readonly name: string,
