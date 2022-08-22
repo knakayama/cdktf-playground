@@ -2,11 +2,11 @@ import { Construct } from 'constructs'
 import { TerraformStack } from 'cdktf'
 import { AwsProvider } from '@cdktf/provider-aws'
 import { awsRegion, defaultTag } from '../../modules/utils/constants'
-import { Network } from '../resources/network'
-import { ObjectStorage } from '../resources/objectStorage'
-import { Encryption } from '../resources/encryption'
-import { LoadBalancer } from '../resources/loadBalancer'
-import { Compute } from '../resources/compute'
+import { Network } from '../constructs/network'
+import { ObjectStorage } from '../constructs/objectStorage'
+import { Encryption } from '../constructs/encryption'
+import { LoadBalancer } from '../constructs/loadBalancer'
+import { Compute } from '../constructs/compute'
 import {
   availabilityZoneData,
   callerIdentityData,

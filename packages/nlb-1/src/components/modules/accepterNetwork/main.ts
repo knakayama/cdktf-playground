@@ -1,12 +1,12 @@
 import { Construct } from 'constructs'
 import { TerraformModule } from 'cdktf'
 import { datasources, iam, vpc } from '@cdktf/provider-aws'
-import { PrivateNetwork } from '../../resources/privateNetwork'
+import { PrivateNetwork } from '../../constructs/privateNetwork'
 import {
   accepterVpcData,
   privateSubnetsData,
 } from '../../../modules/utils/data'
-import { ServerCompute } from '../../resources/serverCompute'
+import { ServerCompute } from '../../constructs/serverCompute'
 
 interface AccepterNetworkProps {
   azs: datasources.DataAwsAvailabilityZones

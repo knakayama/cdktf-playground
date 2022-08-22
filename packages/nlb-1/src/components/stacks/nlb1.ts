@@ -9,8 +9,8 @@ import {
 } from '../../modules/utils/constants'
 import { RequesterNetwork } from '../modules/requesterNetwork/main'
 import { AccepterNetwork } from '../modules/accepterNetwork/main'
-import { ObjectStorage } from '../resources/objectStorage'
-import { Encryption } from '../resources/encryption'
+import { ObjectStorage } from '../constructs/objectStorage'
+import { Encryption } from '../constructs/encryption'
 //import { LoadBalancer } from '../resources/loadBalancer'
 import {
   availabilityZoneData,
@@ -22,8 +22,8 @@ import {
   accepterVpcData,
   instanceProfileData,
 } from '../../modules/utils/data'
-import { NetworkConnection } from '../resources/networkConnection'
-import { InstanceProfile } from '../resources/instanceProfile'
+import { NetworkConnection } from '../constructs/networkConnection'
+import { InstanceProfile } from '../constructs/instanceProfile'
 
 export class Nlb1Stack extends TerraformStack {
   constructor(scope: Construct, name: string) {

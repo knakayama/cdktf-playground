@@ -2,10 +2,10 @@ import { Construct } from 'constructs'
 import { TerraformStack } from 'cdktf'
 import { AwsProvider } from '@cdktf/provider-aws'
 import { awsRegion, defaultTag } from '../../modules/utils/constants'
-import { Network } from '../resources/network'
-import { ObjectStorage } from '../resources/objectStorage'
-import { Encryption } from '../resources/encryption'
-import { Compute } from '../resources/compute'
+import { Network } from '../constructs/network'
+import { ObjectStorage } from '../constructs/objectStorage'
+import { Encryption } from '../constructs/encryption'
+import { Compute } from '../constructs/compute'
 import {
   availabilityZoneData,
   callerIdentityData,
@@ -16,7 +16,7 @@ import {
   sessionLogBucketData,
   vpcData,
 } from '../../modules/utils/data'
-import { DNS } from '../resources/dns'
+import { DNS } from '../constructs/dns'
 
 export class NWQ2Stack extends TerraformStack {
   constructor(scope: Construct, name: string) {

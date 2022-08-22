@@ -1,8 +1,8 @@
 import { Construct } from 'constructs'
 import { TerraformModule } from 'cdktf'
 import { datasources, iam, vpc } from '@cdktf/provider-aws'
-import { ClientCompute } from '../../resources/clientCompute'
-import { PublicNetwork } from '../../resources/publicNetwork'
+import { ClientCompute } from '../../constructs/clientCompute'
+import { PublicNetwork } from '../../constructs/publicNetwork'
 import {
   publicSubnetsData,
   requesterVpcData,
